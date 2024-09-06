@@ -3,6 +3,6 @@ return {
   name = "catppuccin",
   opts = {
     -- configuration options...
-    transparent_background = false,
+    transparent_background = true,
   },
 }
