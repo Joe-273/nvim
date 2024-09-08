@@ -13,4 +13,5 @@ return {
   { import = "astrocommunity.motion.flash-nvim" },
   { import = "astrocommunity.editing-support.vim-visual-multi" },
   { import = "astrocommunity.lsp.nvim-lsp-file-operations" },
+  { import = "astrocommunity.color.nvim-highlight-colors" },
 }

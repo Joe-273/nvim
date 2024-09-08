@@ -8,12 +8,32 @@ return {
       provider = function()
         local icon = " "
         local cwd = vim.fn.getcwd(0)
-        cwd = vim.fn.fnamemodify(cwd, ":~")
-        -- 使用 conditions.width_percent_below 进行条件检查
-        if not conditions.width_percent_below(#cwd, 0.25) then cwd = vim.fn.pathshorten(cwd) end
-        cwd = cwd:gsub("^~", "Home")
+        cwd = vim.fn.fnamemodify(cwd, ":~") -- 替换 ~ 为 Home
+
+        -- 替换路径中的 \ 和 / 为 >
         cwd = cwd:gsub("[\\/]", ">")
-        -- local trail = cwd:sub(-1) == "\\" and "" or "\\"
+
+        -- 计算路径的长度
+        local max_length = 30 -- 最大显示长度，这个值可以根据需要调整
+        if #cwd > max_length then
+          local parts = {}
+          for part in cwd:gmatch "[^>]+" do
+            table.insert(parts, part)
+          end
+
+          -- 只保留前一个盘符、一个路径部分、中间的省略号和最后两个路径部分
+          local shortened_cwd = parts[1] -- 保留盘符
+          if #parts > 2 then
+            shortened_cwd = shortened_cwd .. ">" .. "..." -- 添加省略号
+            shortened_cwd = shortened_cwd .. ">" .. parts[#parts]
+          else
+            -- 如果路径部分少于3个，直接拼接
+            shortened_cwd = table.concat(parts, ">")
+          end
+
+          cwd = shortened_cwd
+        end
+
         return icon .. cwd
       end,
       hl = { fg = "fg" },
