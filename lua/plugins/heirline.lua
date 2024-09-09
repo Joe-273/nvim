@@ -2,8 +2,7 @@ return {
   "rebelot/heirline.nvim",
   opts = function(_, opts)
     local status = require "astroui.status"
-    local conditions = require "heirline.conditions" -- 引入 conditions 模块
-
+    -- 显示路径函数
     local WorkDir = {
       provider = function()
         local icon = " "
