@@ -44,7 +44,7 @@ return {
       {
         condition = function() return vim.bo.modified end,
         provider = "[+]",
-        hl = { fg = "green" },
+        hl = { fg = utils.get_highlight("diffAdded").fg },
       },
       {
         condition = function() return not vim.bo.modifiable or vim.bo.readonly end,
@@ -60,7 +60,7 @@ return {
       hl = function()
         if vim.bo.modified then
           -- use `force` because we need to override the child's hl foreground
-          return { fg = "cyan", bold = false, force = true }
+          return { fg = utils.get_highlight("diffAdded").fg, bold = false, force = true }
         end
       end,
     }
@@ -73,6 +73,99 @@ return {
       { provider = "%<" } -- this means that the statusline is cut here when there's not enough space
     )
 
+    --====== VMode ======--
+    local ViMode = {
+      -- get vim current mode, this information will be required by the provider
+      -- and the highlight functions, so we compute it only once per component
+      -- evaluation and store it as a component attribute
+      init = function(self)
+        self.mode = vim.fn.mode(1) -- :h mode()
+      end,
+      -- Now we define some dictionaries to map the output of mode() to the
+      -- corresponding string and color. We can put these into `static` to compute
+      -- them at initialisation time.
+      static = {
+        mode_names = { -- change the strings if you like it vvvvverbose!
+          n = "N",
+          no = "N?",
+          nov = "N?",
+          noV = "N?",
+          ["no\22"] = "N?",
+          niI = "Ni",
+          niR = "Nr",
+          niV = "Nv",
+          nt = "Nt",
+          v = "V",
+          vs = "Vs",
+          V = "V_",
+          Vs = "Vs",
+          ["\22"] = "^V",
+          ["\22s"] = "^V",
+          s = "S",
+          S = "S_",
+          ["\19"] = "^S",
+          i = "I",
+          ic = "Ic",
+          ix = "Ix",
+          R = "R",
+          Rc = "Rc",
+          Rx = "Rx",
+          Rv = "Rv",
+          Rvc = "Rv",
+          Rvx = "Rv",
+          c = "C",
+          cv = "Ex",
+          r = "...",
+          rm = "M",
+          ["r?"] = "?",
+          ["!"] = "!",
+          t = "T",
+        },
+        mode_colors = {
+          n = "blue",
+          i = "green",
+          v = "pink",
+          V = "pink",
+          ["\22"] = "pink",
+          c = "orange",
+          s = "yellow",
+          S = "yellow",
+          ["\19"] = "yellow",
+          R = "orange",
+          r = "orange",
+          ["!"] = "red",
+          t = "red",
+        },
+      },
+      -- We can now access the value of mode() that, by now, would have been
+      -- computed by `init()` and use it to index our strings dictionary.
+      -- note how `static` fields become just regular attributes once the
+      -- component is instantiated.
+      -- To be extra meticulous, we can also add some vim statusline syntax to
+      -- control the padding and make sure our string is always at least 2
+      -- characters long. Plus a nice Icon.
+      provider = function(self) return "  %2(" .. self.mode_names[self.mode] .. "%) " end,
+      -- Same goes for the highlight. Now the foreground will change according to the current mode.
+      hl = function(self)
+        local mode = self.mode:sub(1, 1) -- get only the first mode character
+        return { fg = "base", bold = true, bg = self.mode_colors[mode] }
+      end,
+      -- Re-evaluate the component only on ModeChanged event!
+      -- Also allows the statusline to be re-evaluated when entering operator-pending mode
+      update = {
+        "ModeChanged",
+        pattern = "*:*",
+        callback = vim.schedule_wrap(function() vim.cmd "redrawstatus" end),
+      },
+      {
+        provider = "  ",
+        hl = function(self)
+          local mode = self.mode:sub(1, 1) -- get only the first mode character
+          return { fg = self.mode_colors[mode], bg = "bg" }
+        end,
+      },
+    }
+
     --====== LSPActive ======--
     local LSPActive = {
       condition = conditions.lsp_attached,
@@ -84,12 +177,12 @@ return {
         end
         return " [" .. table.concat(names, " ") .. "]"
       end,
-      hl = { fg = "green", bold = false },
+      hl = { fg = utils.get_highlight("diffChanged").fg, bold = false },
     }
 
     opts.statusline = { -- statusline
       hl = { fg = "fg", bg = "bg" },
-      status.component.mode { mode_text = { padding = { left = 1, right = 1 } }, hl = { fg = "base", bold = true } },
+      status.component.builder(ViMode),
       status.component.git_branch(),
       status.component.git_diff(),
       status.component.diagnostics(),

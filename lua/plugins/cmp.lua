@@ -27,8 +27,8 @@ return {
     }
     opts.mapping = {
       ["<CR>"] = cmp.config.disable,
-      ["<C-p>"] = cmp.mapping.select_prev_item { behavior = cmp.SelectBehavior.Select },
-      ["<C-n>"] = cmp.mapping.select_next_item { behavior = cmp.SelectBehavior.Select },
+      ["<C-p>"] = cmp.mapping.scroll_docs(-4),
+      ["<C-n>"] = cmp.mapping.scroll_docs(4),
       ["<C-k>"] = cmp.mapping.select_prev_item { behavior = cmp.SelectBehavior.Select },
       ["<C-j>"] = cmp.mapping.select_next_item { behavior = cmp.SelectBehavior.Select },
       ["<Tab>"] = cmp.mapping(function(fallback)
