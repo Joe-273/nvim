@@ -27,4 +27,20 @@ return {
       },
     },
   },
+  {
+    "Mofiqul/vscode.nvim",
+    opts = {
+      transparent = true,
+    },
+  },
+  {
+    "projekt0n/github-nvim-theme",
+    config = function()
+      require("github-theme").setup {
+        options = {
+          transparent = true, -- Disable setting bg (make neovim's background transparent)
+        },
+      }
+    end,
+  },
 }

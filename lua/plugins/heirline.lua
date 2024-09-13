@@ -5,9 +5,21 @@ return {
     local conditions = require "heirline.conditions"
     local utils = require "heirline.utils"
 
-    -- configure palettes
-    local mocha = require("catppuccin.palettes").get_palette "mocha"
-    require("heirline").load_colors(mocha)
+    local colors = {
+      green = utils.get_highlight("String").fg,
+      blue = utils.get_highlight("Function").fg,
+      gray = utils.get_highlight("NonText").fg,
+      orange = utils.get_highlight("Constant").fg,
+      purple = utils.get_highlight("Statement").fg,
+      cyan = utils.get_highlight("Special").fg,
+      diag_warn = utils.get_highlight("DiagnosticWarn").fg,
+      diag_error = utils.get_highlight("DiagnosticError").fg,
+      diag_hint = utils.get_highlight("DiagnosticHint").fg,
+      diag_info = utils.get_highlight("DiagnosticInfo").fg,
+      git_del = utils.get_highlight("diffDeleted").fg,
+      git_add = utils.get_highlight("diffAdded").fg,
+      git_change = utils.get_highlight("diffChanged").fg,
+    }
 
     --====== FileNameBlock ======--
     local FileNameBlock = {
@@ -15,6 +27,7 @@ return {
       init = function(self) self.filename = vim.api.nvim_buf_get_name(0) end,
     }
     -- We can now define some children separately and add them later
+
     local FileIcon = {
       init = function(self)
         local filename = self.filename
@@ -25,45 +38,50 @@ return {
       provider = function(self) return self.icon and (self.icon .. " ") end,
       hl = function(self) return { fg = self.icon_color } end,
     }
+
     local FileName = {
       provider = function(self)
         -- first, trim the pattern relative to the current directory. For other
         -- options, see :h filename-modifers
         local filename = vim.fn.fnamemodify(self.filename, ":.")
         if filename == "" then return "[No Name]" end
-        filename = filename:gsub("[\\/]", ">")
+        -- replace backslashes with greater-than symbol
+        filename = filename:gsub("\\", "＞")
         -- now, if the filename would occupy more than 1/4th of the available
         -- space, we trim the file path to its initials
         -- See Flexible Components section below for dynamic truncation
         if not conditions.width_percent_below(#filename, 0.25) then filename = vim.fn.pathshorten(filename) end
         return "[" .. filename .. "]"
       end,
-      hl = { fg = utils.get_highlight("Directory").fg, bold = false },
     }
+
     local FileFlags = {
       {
         condition = function() return vim.bo.modified end,
-        provider = "[+]",
-        hl = { fg = utils.get_highlight("diffAdded").fg },
+        provider = "",
+        hl = { fg = colors.green },
       },
       {
         condition = function() return not vim.bo.modifiable or vim.bo.readonly end,
         provider = "",
-        hl = { fg = "orange" },
+        hl = { fg = colors.orange },
       },
     }
+
     -- Now, let's say that we want the filename color to change if the buffer is
     -- modified. Of course, we could do that directly using the FileName.hl field,
     -- but we'll see how easy it is to alter existing components using a "modifier"
     -- component
+
     local FileNameModifer = {
       hl = function()
         if vim.bo.modified then
           -- use `force` because we need to override the child's hl foreground
-          return { fg = utils.get_highlight("diffAdded").fg, bold = false, force = true }
+          return { fg = colors.green, bold = true, force = true }
         end
       end,
     }
+
     -- let's add the children to our FileNameBlock component
     FileNameBlock = utils.insert(
       FileNameBlock,
@@ -72,8 +90,7 @@ return {
       FileFlags,
       { provider = "%<" } -- this means that the statusline is cut here when there's not enough space
     )
-
-    --====== VMode ======--
+    --====== ViMode ======--
     local ViMode = {
       -- get vim current mode, this information will be required by the provider
       -- and the highlight functions, so we compute it only once per component
@@ -122,20 +139,27 @@ return {
           t = "T",
         },
         mode_colors = {
-          n = "blue",
-          i = "green",
-          v = "pink",
-          V = "pink",
-          ["\22"] = "pink",
-          c = "orange",
-          s = "yellow",
-          S = "yellow",
-          ["\19"] = "yellow",
-          R = "orange",
-          r = "orange",
-          ["!"] = "red",
-          t = "red",
+          n = "#545ca1",
+          i = "#a3d47f",
+          v = "#fb8b1b",
+          V = "#fb8b1b",
+          ["\22"] = "#fb8b1b",
+          c = "#e688a1",
+          s = "#959ec9",
+          S = "#959ec9",
+          ["\19"] = "#959ec9",
+          R = "#504bff",
+          r = "#504bff",
+          ["!"] = "#fe3b6d",
+          t = "#fe3b6d",
         },
+      },
+      {
+        provider = " ",
+        hl = function(self)
+          local mode = self.mode:sub(1, 1) -- get only the first mode character
+          return { bg = "NONE", fg = self.mode_colors[mode], bold = true }
+        end,
       },
       -- We can now access the value of mode() that, by now, would have been
       -- computed by `init()` and use it to index our strings dictionary.
@@ -148,7 +172,7 @@ return {
       -- Same goes for the highlight. Now the foreground will change according to the current mode.
       hl = function(self)
         local mode = self.mode:sub(1, 1) -- get only the first mode character
-        return { fg = "base", bold = true, bg = self.mode_colors[mode] }
+        return { fg = "#eeeeee", bg = self.mode_colors[mode], bold = true }
       end,
       -- Re-evaluate the component only on ModeChanged event!
       -- Also allows the statusline to be re-evaluated when entering operator-pending mode
@@ -158,14 +182,10 @@ return {
         callback = vim.schedule_wrap(function() vim.cmd "redrawstatus" end),
       },
       {
-        provider = "  ",
-        hl = function(self)
-          local mode = self.mode:sub(1, 1) -- get only the first mode character
-          return { fg = self.mode_colors[mode], bg = "bg" }
-        end,
+        provider = " ",
+        hl = { bg = "NONE" },
       },
     }
-
     --====== LSPActive ======--
     local LSPActive = {
       condition = conditions.lsp_attached,
@@ -177,11 +197,10 @@ return {
         end
         return " [" .. table.concat(names, " ") .. "]"
       end,
-      hl = { fg = utils.get_highlight("diffChanged").fg, bold = false },
+      hl = { fg = colors.blue },
     }
 
     opts.statusline = { -- statusline
-      hl = { fg = "fg", bg = "bg" },
       status.component.builder(ViMode),
       status.component.git_branch(),
       status.component.git_diff(),
