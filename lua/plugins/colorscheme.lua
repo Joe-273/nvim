@@ -39,6 +39,9 @@ return {
       require("github-theme").setup {
         options = {
           transparent = false, -- Disable setting bg (make neovim's background transparent)
+          styles = {
+            comments = "italic",
+          },
         },
       }
     end,

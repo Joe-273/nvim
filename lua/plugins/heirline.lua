@@ -168,7 +168,7 @@ return {
       -- To be extra meticulous, we can also add some vim statusline syntax to
       -- control the padding and make sure our string is always at least 2
       -- characters long. Plus a nice Icon.
-      provider = function(self) return "  %2(" .. self.mode_names[self.mode] .. "%) " end,
+      provider = function(self) return "  %2(" .. self.mode_names[self.mode] .. "%) " end,
       -- Same goes for the highlight. Now the foreground will change according to the current mode.
       hl = function(self)
         local mode = self.mode:sub(1, 1) -- get only the first mode character
@@ -192,7 +192,7 @@ return {
       update = { "LspAttach", "LspDetach" },
       provider = function()
         local names = {}
-        for _, server in pairs(vim.lsp.get_active_clients { bufnr = 0 }) do
+        for _, server in pairs(vim.lsp.get_clients { bufnr = 0 }) do
           table.insert(names, server.name)
         end
         return " [" .. table.concat(names, " ") .. "]"
