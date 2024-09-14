@@ -38,7 +38,7 @@ return {
     config = function()
       require("github-theme").setup {
         options = {
-          transparent = true, -- Disable setting bg (make neovim's background transparent)
+          transparent = false, -- Disable setting bg (make neovim's background transparent)
         },
       }
     end,
