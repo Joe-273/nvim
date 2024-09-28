@@ -5,18 +5,48 @@
 return {
 
   -- == Examples of Adding Plugins ==
-
   "andweeb/presence.nvim",
   {
     "ray-x/lsp_signature.nvim",
-    event = "BufRead",
-    config = function() require("lsp_signature").setup() end,
+    event = "User AstroFile",
+    main = "lsp_signature",
+    opts = {
+      hint_enable = false, -- disable hints as it will crash in some terminal
+      toggle_key = "<C-e>",
+    },
+    specs = {
+      {
+        "folke/noice.nvim",
+        optional = true,
+        ---@type NoiceConfig
+        opts = {
+          lsp = {
+            signature = { enabled = false },
+            hover = { enabled = false },
+          },
+        },
+      },
+      { "AstroNvim/astrolsp", optional = true, opts = { features = { signature_help = false } } },
+    },
   },
 
   -- == Examples of Overriding Plugins ==
 
   -- You can disable default plugins as follows:
-  { "max397574/better-escape.nvim" },
+  {
+    "max397574/better-escape.nvim",
+    opts = function(_, opts)
+      opts.mappings.i = {
+        j = {
+          k = "<Esc>",
+          j = "<Esc>",
+        },
+        k = {
+          k = "<Esc>", -- Press 'kk' to exit input mode
+        },
+      }
+    end,
+  },
 
   -- You can also easily customize additional setup of plugins that is outside of the plugin's setup call
   {

@@ -1,4 +1,5 @@
 local cmp = require "cmp"
+local compare = require "cmp.config.compare"
 local luasnip = require "luasnip"
 
 local has_words_before = function()
@@ -62,10 +63,10 @@ end, { "i", "s" })
 local kind_icons = {
   Text = "󰉿 ",
   Method = "󰆧 ",
-  Function = "󰊕 ",
+  Function = "ƒ ",
   Constructor = " ",
   Field = "󰜢 ",
-  Variable = "󰀫 ",
+  Variable = "ɑ ",
   Class = "󰠱 ",
   Interface = " ",
   Module = " ",
@@ -74,7 +75,7 @@ local kind_icons = {
   Value = "󰎠 ",
   Enum = " ",
   Keyword = "󰌋 ",
-  Snippet = " ",
+  Snippet = "󰆐 ",
   Color = "󰏘 ",
   File = "󰈙 ",
   Reference = "󰈇 ",
@@ -84,7 +85,7 @@ local kind_icons = {
   Struct = "󰙅 ",
   Event = " ",
   Operator = "󰆕 ",
-  TypeParameter = " ",
+  TypeParameter = "󰅲 ",
 }
 
 return {
@@ -95,13 +96,20 @@ return {
     "hrsh7th/cmp-path",
     "L3MON4D3/LuaSnip",
     "saadparwaiz1/cmp_luasnip",
+    "hrsh7th/cmp-calc",
+    "f3fora/cmp-spell",
   },
   opts = function(_, opts)
     opts.formatting = {
-      format = function(_, vim_item)
-        -- Kind icons
-        vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind) -- This concatenates the icons with the name of the item kind
-        return vim_item
+      fields = { "kind", "abbr", "menu" },
+      format = function(entry, vim_item)
+        local original_kind = vim_item.kind
+        vim_item.kind = kind_icons[original_kind] or original_kind
+        local kind = require("lspkind").cmp_format { mode = "symbol_text", maxwidth = 50 }(entry, vim_item)
+        local strings = vim.split(kind.kind, "%s", { trimempty = true })
+        kind.kind = " " .. (strings[1] or "") .. " "
+        kind.menu = "    (" .. original_kind .. ")"
+        return kind
       end,
     }
     -- 直接定义配置
@@ -109,18 +117,66 @@ return {
       completeopt = "menu,menuone,noinsert", -- 自动选中第一条
     }
     opts.sources = cmp.config.sources {
-      { name = "nvim_lsp", priority = 1000 },
+      {
+        name = "nvim_lsp",
+        ---@param entry cmp.Entry
+        ---@param ctx cmp.Context
+        entry_filter = function(entry, ctx)
+          -- Check if the buffer type is 'vue'
+          if ctx.filetype ~= "vue" then return true end
+
+          local cursor_before_line = ctx.cursor_before_line
+          -- For events
+          if cursor_before_line:sub(-1) == "@" then
+            return entry.completion_item.label:match "^@"
+            -- For props also exclude events with `:on-` prefix
+          elseif cursor_before_line:sub(-1) == ":" then
+            return entry.completion_item.label:match "^:" and not entry.completion_item.label:match "^:on-"
+          else
+            return true
+          end
+        end,
+        option = { markdown_oxide = { keyword_pattern = [[\(\k\| \|\/\|#\)\+]] } },
+        priority = 1000,
+      },
       { name = "luasnip", priority = 750 },
-      { name = "buffer", priority = 500 },
-      { name = "path", priority = 250 },
+      { name = "pandoc_references", priority = 725 },
+      { name = "latex_symbols", priority = 700 },
+      { name = "emoji", priority = 700 },
+      { name = "calc", priority = 650 },
+      { name = "path", priority = 500 },
+      { name = "buffer", priority = 250 },
+    }
+    opts.sorting = {
+      comparators = {
+        compare.offset,
+        compare.exact,
+        compare.score,
+        compare.recently_used,
+        function(entry1, entry2)
+          local _, entry1_under = entry1.completion_item.label:find "^_+"
+          local _, entry2_under = entry2.completion_item.label:find "^_+"
+          entry1_under = entry1_under or 0
+          entry2_under = entry2_under or 0
+          if entry1_under > entry2_under then
+            return false
+          elseif entry1_under < entry2_under then
+            return true
+          end
+        end,
+        compare.kind,
+        compare.sort_text,
+        compare.length,
+        compare.order,
+      },
     }
     opts.mapping = {
       ["<CR>"] = cmp.config.disable,
       ["<C-p>"] = cmp.mapping.scroll_docs(-4),
       ["<C-n>"] = cmp.mapping.scroll_docs(4),
-      ["<C-k>"] = cmp.mapping.select_prev_item { behavior = cmp.SelectBehavior.Select },
-      ["<C-j>"] = cmp.mapping.select_next_item { behavior = cmp.SelectBehavior.Select },
-      ["<C-c>"] = close_cmp_mapping,
+      ["<C-k>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }, { "i", "s" }),
+      ["<C-j>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }, { "i", "s" }),
+      ["<C-e>"] = close_cmp_mapping,
       ["<Tab>"] = tab_mapping,
       ["<S-Tab>"] = shift_tab_mapping,
     }
