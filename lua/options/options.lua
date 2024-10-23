@@ -29,7 +29,7 @@ vim.opt.showmode = false
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
 vim.schedule(function()
-  vim.opt.clipboard = "unnamedplus"
+	vim.opt.clipboard = "unnamedplus"
 end)
 
 -- Enable break indent
@@ -80,4 +80,4 @@ vim.opt.scrolloff = 10
 vim.opt.laststatus = 3
 
 -- Keep signcolumn on by default
-vim.opt.signcolumn = 'auto'
+vim.opt.signcolumn = "auto"
