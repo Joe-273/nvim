@@ -9,7 +9,7 @@ return {
 			transparent = false,
 			styles = {
 				-- Background styles. Can be "dark", "transparent" or "normal"
-				sidebars = "dark", -- style for sidebars, see below
+				sidebars = "transparent", -- style for sidebars, see below
 				floats = "transparent", -- style for floating windows
 			},
 		},
@@ -36,7 +36,7 @@ return {
 					darken = { -- Darken floating windows and sidebar-like windows
 						floats = false,
 						sidebars = {
-							enable = true,
+							enable = false,
 						},
 					},
 				},

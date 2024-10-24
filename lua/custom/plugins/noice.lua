@@ -4,8 +4,13 @@ return {
 	keys = { ":", "/", "?" }, -- lazy load cmp on more keys along with insert mode
 	config = function()
 		require("noice").setup({
-			popupmenu = {
-				enabled = false,
+			views = {
+				cmdline_popup = {
+					position = {
+						row = 15,
+						col = "50%",
+					},
+				},
 			},
 			lsp = {
 				signature = {

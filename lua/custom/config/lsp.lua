@@ -4,6 +4,10 @@ vim.fn.sign_define("DiagnosticSignWarn", { text = " ", texthl = "DiagnosticSi
 vim.fn.sign_define("DiagnosticSignInfo", { text = " ", texthl = "DiagnosticSignInfo" })
 vim.fn.sign_define("DiagnosticSignHint", { text = " ", texthl = "DiagnosticSignHint" })
 
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+	border = "rounded",
+})
+
 --  This function gets run when an LSP attaches to a particular buffer.
 --    That is to say, every time a new file is opened that is associated with
 --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this

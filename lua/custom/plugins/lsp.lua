@@ -27,7 +27,18 @@ return {
 			"hrsh7th/cmp-nvim-lsp",
 		},
 		config = function()
-			require 'custom.config.lsp'
+			require("custom.config.lsp")
+		end,
+	},
+	{
+		"ray-x/lsp_signature.nvim",
+		event = "VeryLazy",
+		opts = {
+			floating_window = true,
+			hint_prefix = "✨ ",
+		},
+		config = function(_, opts)
+			require("lsp_signature").setup(opts)
 		end,
 	},
 }
