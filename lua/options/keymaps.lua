@@ -6,7 +6,8 @@
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
 -- Diagnostic keymaps
-vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
+vim.keymap.set("n", "<leader>dq", vim.diagnostic.setloclist, { desc = "Open [D]iagnostic [Q]uickfix list" })
+vim.keymap.set("n", "<leader>da", vim.diagnostic.setloclist, { desc = "Open [A]ll diagnostics list" })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -36,6 +37,12 @@ vim.keymap.set("n", "<C-q>", "<cmd>qall<CR>", { desc = "Quit all" })
 vim.keymap.set("n", "<leader>w", "<cmd>w<CR>", { desc = "Save buffer" })
 vim.keymap.set("n", "<leader>W", "<cmd>wall<CR>", { desc = "Save all buffers" })
 
--- Map  to move to the head or end of the line
-vim.api.nvim_set_keymap("n", "<S-h>", "^", { noremap = true, desc = "Move to the head of the line" })
-vim.api.nvim_set_keymap("n", "<S-l>", "$", { noremap = true, desc = "Move to the end of the line" })
+-- Move to the head or end of the line
+vim.keymap.set({ "n", "v" }, "<S-h>", "^", { desc = "Move to the head of the line" })
+vim.keymap.set({ "n", "v" }, "<S-l>", "$", { desc = "Move to the end of the line" })
+
+-- Keymap to adjust the window pane size
+vim.keymap.set("n", "<S-A-l>", "<C-w>>", { desc = "Increase window width" })
+vim.keymap.set("n", "<S-A-h>", "<C-w><", { desc = "Decrease window width" })
+vim.keymap.set("n", "<S-A-j>", "<C-w>+", { desc = "Increase window height" })
+vim.keymap.set("n", "<S-A-k>", "<C-w>-", { desc = "Decrease window height" })

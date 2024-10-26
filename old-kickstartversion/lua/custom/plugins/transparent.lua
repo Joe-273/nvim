@@ -14,6 +14,7 @@
 -- 		vim.api.nvim_set_hl(0, "NeoTreeFloatTitle", { fg = normal_fg })
 -- 	end,
 -- })
+
 local prefix = "<leader>u"
 return {
 	"xiyaowong/transparent.nvim",

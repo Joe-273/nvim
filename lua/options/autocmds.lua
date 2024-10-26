@@ -19,3 +19,12 @@ vim.api.nvim_create_autocmd({ "BufReadPost" }, {
 		vim.api.nvim_exec('silent! normal! g`"zv', false)
 	end,
 })
+
+-- Disabled the ufo plugin in neo-tree
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "neo-tree",
+	callback = function()
+		require("ufo").detach()
+		vim.opt_local.foldenable = false
+	end,
+})
