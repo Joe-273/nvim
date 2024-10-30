@@ -1,6 +1,6 @@
 vim.diagnostic.config({
   virtual_text = {
-    spacing = 4,
+    spacing = 2,
     prefix = "󰧞",
   },
   float = {
@@ -9,6 +9,11 @@ vim.diagnostic.config({
   },
   severity_sort = true,
 })
+-- If you want icons for diagnostic errors, you'll need to define them somewhere:
+vim.fn.sign_define("DiagnosticSignError", { text = " ", texthl = "DiagnosticSignError" })
+vim.fn.sign_define("DiagnosticSignWarn", { text = " ", texthl = "DiagnosticSignWarn" })
+vim.fn.sign_define("DiagnosticSignInfo", { text = " ", texthl = "DiagnosticSignInfo" })
+vim.fn.sign_define("DiagnosticSignHint", { text = " ", texthl = "DiagnosticSignHint" })
 
 --  This function gets run when an LSP attaches to a particular buffer.
 --    That is to say, every time a new file is opened that is associated with
@@ -27,38 +32,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
     end
 
-    -- Toggle diagnostics display
-    map(
-      "<leader>td",
-      (function()
-        local diag_status = 1 -- 1 is show; 0 is hide
-        return function()
-          if diag_status == 1 then
-            diag_status = 0
-            vim.diagnostic.config({
-              underline = false,
-              virtual_text = false,
-              signs = false,
-              update_in_insert = false,
-            })
-          else
-            diag_status = 1
-            vim.diagnostic.config({
-              underline = true,
-              virtual_text = true,
-              signs = true,
-              update_in_insert = true,
-            })
-          end
-        end
-      end)(),
-      "Toggle diagnostics display"
-    )
-
     -- Jump to the definition of the word under your cursor.
     --  This is where a variable was first declared, or where a function is defined, etc.
     --  To jump back, press <C-t>.
     map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+
+    -- WARN: This is not Goto Definition, this is Goto Declaration.
+    --  For example, in C this would take you to the header.
+    map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 
     -- Find references for the word under your cursor.
     map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
@@ -70,28 +51,23 @@ vim.api.nvim_create_autocmd("LspAttach", {
     -- Jump to the type of the word under your cursor.
     --  Useful when you're not sure what type a variable is and you want to see
     --  the definition of its *type*, not where it was *defined*.
-    map("<leader>D", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")
+    map("<leader>lt", require("telescope.builtin").lsp_type_definitions, "[L]SP [T]ype Definition")
 
     -- Fuzzy find all the symbols in your current document.
     --  Symbols are things like variables, functions, types, etc.
-    map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
+    map("<leader>lds", require("telescope.builtin").lsp_document_symbols, "[L]SP [D]ocument [S]ymbols")
 
     -- Fuzzy find all the symbols in your current workspace.
     --  Similar to document symbols, except searches over your entire project.
-    map("<leader>ws", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[W]orkspace [S]ymbols")
+    map("<leader>lws", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[L]SP [W]orkspace [S]ymbols")
 
     -- Rename the variable under your cursor.
     --  Most Language Servers support renaming across files, etc.
-    map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
-    map("<leader>lr", vim.lsp.buf.rename, "[R]ename")
+    map("<leader>lr", vim.lsp.buf.rename, "[L]SP [R]ename")
 
     -- Execute a code action, usually your cursor needs to be on top of an error
     -- or a suggestion from your LSP for this to activate.
-    map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction", { "n", "x" })
-
-    -- WARN: This is not Goto Definition, this is Goto Declaration.
-    --  For example, in C this would take you to the header.
-    map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+    map("<leader>la", vim.lsp.buf.code_action, "[L]SP code [A]ction", { "n", "x" })
 
     -- The following two autocommands are used to highlight references of the
     -- word under your cursor when your cursor rests there for a little while.
@@ -150,35 +126,7 @@ capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp"
 --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
 --  - settings (table): Override the default settings passed when initializing the server.
 --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-local servers = {
-  -- clangd = {},
-  -- gopls = {},
-  -- pyright = {},
-  -- rust_analyzer = {},
-  -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-  --
-  -- Some languages (like typescript) have entire language plugins that can be useful:
-  --    https://github.com/pmizio/typescript-tools.nvim
-  --
-  -- But for many setups, the LSP (`ts_ls`) will work just fine
-  -- ts_ls = {},
-  --
-
-  lua_ls = {
-    -- cmd = {...},
-    -- filetypes = { ...},
-    -- capabilities = {},
-    settings = {
-      Lua = {
-        completion = {
-          callSnippet = "Replace",
-        },
-        -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-        -- diagnostics = { disable = { 'missing-fields' } },
-      },
-    },
-  },
-}
+local servers = require("plugins.lsp.lsp-server")
 
 -- Ensure the servers and tools above are installed
 --  To check the current status of installed tools and/or manually install
@@ -186,13 +134,19 @@ local servers = {
 --    :Mason
 --
 --  You can press `g?` for help in this menu.
-require("mason").setup()
+require("mason").setup({
+  ui = {
+    border = "rounded",
+  },
+})
 
 -- You can add other tools here that you want Mason to install
 -- for you, so that they are available from within Neovim.
 local ensure_installed = vim.tbl_keys(servers or {})
 vim.list_extend(ensure_installed, {
   "stylua", -- Used to format Lua code
+  "prettierd",
+  "eslint-lsp",
 })
 require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 

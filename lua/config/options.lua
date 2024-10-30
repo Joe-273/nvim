@@ -35,11 +35,6 @@ end)
 -- Enable break indent
 vim.opt.breakindent = true
 
--- Set indent
-vim.opt.tabstop = 2
-vim.opt.shiftwidth = 2
-vim.opt.expandtab = true
-
 -- Save undo history
 vim.opt.undofile = true
 
@@ -49,6 +44,11 @@ vim.opt.smartcase = true
 
 -- Keep signcolumn on by default
 vim.opt.signcolumn = "yes"
+
+-- Set indent
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
 
 -- Decrease update time
 vim.opt.updatetime = 250

@@ -11,6 +11,8 @@ return {
 	"query",
 	"vim",
 	"vimdoc",
+	"regex",
+	"bash",
 	"python",
 	"javascript",
 	"typescript",

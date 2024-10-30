@@ -2,12 +2,10 @@ require("neo-tree").setup({
 	close_if_last_window = true,
 	use_libuv_file_watcher = true,
 	enable_diagnostics = false,
+	hide_root_node = true,
 	popup_border_style = "rounded",
 	sources = {
 		"filesystem",
-	},
-	source_selector = {
-		statusline = false,
 	},
 	window = {
 		position = "left",
@@ -25,6 +23,9 @@ require("neo-tree").setup({
 		},
 	},
 	default_component_configs = {
+		indent = {
+			last_indent_marker = "╰╴",
+		},
 		modified = {
 			symbol = "",
 		},

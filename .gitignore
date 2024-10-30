@@ -2,5 +2,4 @@ lazy-lock.json
 neovim.yml
 selene.toml
 .neoconf.json
-.stylua.toml
-
+.luarc.json

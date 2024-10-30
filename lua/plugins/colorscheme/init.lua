@@ -4,7 +4,7 @@ return {
 		priority = 2000, -- Make sure to load this before all the other start plugins.
 		lazy = false,
 		keys = {
-			{ "<leader>t" .. "T", "<cmd>TransparentToggle<CR>", desc = "[T]oggle [T]ransparency" },
+			{ "<leader>tt", "<cmd>TransparentToggle<CR>", desc = "Theme: [T]oggle [T]ransparency" },
 		},
 		config = function()
 			require("plugins.colorscheme.transparent")
@@ -33,16 +33,17 @@ return {
 				transparent_background = vim.g.transparent_enabled,
 				highlight_overrides = {
 					all = function(colors)
+						local separator_fg = vim.g.transparent_enabled and colors.surface1 or colors.crust
 						return {
 							NormalFloat = { bg = colors.base },
 							NeoTreeNormal = { bg = colors.base },
 							NeoTreeNormalNC = { bg = colors.base },
-							NeoTreeWinSeparator = { fg = colors.surface1, bg = colors.none },
+							NeoTreeWinSeparator = { fg = separator_fg, bg = colors.none },
 						}
 					end,
 				},
 			})
-			vim.cmd.colorscheme("catppuccin-macchiato")
+			-- vim.cmd.colorscheme("catppuccin-mocha")
 		end,
 	},
 	{
@@ -63,6 +64,35 @@ return {
 				},
 			})
 			-- vim.cmd.colorscheme("github_dark")
+		end,
+	},
+	{
+		"EdenEast/nightfox.nvim",
+		priority = 1000, -- Ensure it loads first
+		config = function()
+			-- Default options
+			require("nightfox").setup({
+				options = {
+					transparent = vim.g.transparent_enabled, -- Disable setting background
+					terminal_colors = true, -- Set terminal colors (vim.g.terminal_color_*) used in `:terminal`
+					dim_inactive = false, -- Non focused panes set to alternative background
+					module_default = true, -- Default enable value for modules
+					styles = {
+						comments = "italic",
+						keywords = "bold",
+						types = "italic,bold",
+					},
+				},
+				groups = {
+					all = {
+						NormalFloat = { bg = "bg1" },
+						NeoTreeNormal = { bg = "bg1" },
+						NeoTreeNormalNC = { bg = "bg1" },
+					},
+				},
+			})
+			-- nightfox dayfox dawnfox duskfox nordfox terafox carbonfox
+			vim.cmd.colorscheme("nordfox")
 		end,
 	},
 }
