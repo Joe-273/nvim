@@ -1,12 +1,10 @@
 local function toggle_noice()
-	local noice = require("noice")
-	-- get all windows
-	local windows = vim.api.nvim_list_wins()
 	-- set noice flag
 	local noice_opened = false
 	local noice_win_id = nil
+
 	-- Check if the noice window is open
-	for _, win in ipairs(windows) do
+	for _, win in ipairs(vim.api.nvim_list_wins()) do
 		local buf = vim.api.nvim_win_get_buf(win)
 		local win_config = vim.api.nvim_win_get_config(win)
 
@@ -24,7 +22,7 @@ local function toggle_noice()
 		vim.api.nvim_win_close(noice_win_id, true)
 	else
 		-- NOTE: If there is no historical record, the 'no' window will not open
-		noice.cmd("history")
+		require("noice").cmd("history")
 	end
 end
 

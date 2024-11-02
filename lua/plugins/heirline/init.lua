@@ -5,8 +5,11 @@ return {
 	event = "VeryLazy",
 
 	config = function()
+		local hl = require("config.highlight")
+		require("heirline").load_colors(hl.get_colors())
 		require("heirline").setup({
 			statusline = require("plugins.heirline.statusline"),
+			tabline = require("plugins.heirline.tabline"),
 		})
 	end,
 }

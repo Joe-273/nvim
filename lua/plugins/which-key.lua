@@ -23,6 +23,7 @@ return { -- Useful plugin to show you pending keybinds.
 			-- single ability mapping
 			{ "<leader>s", group = "[F]lask Toggle", icon = "" },
 			{ "<leader>S", group = "[F]lask Treesitter", icon = "" },
+			{ "<leader>b", group = "[B]ar Pick", icon = "" },
 		},
 	},
 }

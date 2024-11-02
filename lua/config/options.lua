@@ -78,6 +78,3 @@ vim.opt.scrolloff = 10
 
 -- only one statusline
 vim.opt.laststatus = 3
-
--- Keep signcolumn on by default
-vim.opt.signcolumn = "auto"

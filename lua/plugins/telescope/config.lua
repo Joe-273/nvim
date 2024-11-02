@@ -20,32 +20,32 @@
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
 require("telescope").setup({
-  -- You can put your default mappings / updates / etc. in here
-  --  All the info you're looking for is in `:help telescope.setup()`
-  --
-  defaults = {
-    sorting_strategy = "ascending",
-    layout_config = {
-      horizontal = { prompt_position = "top", preview_width = 0.55 },
-      vertical = { mirror = false },
-      width = 0.85,
-      height = 0.80,
-      preview_cutoff = 120,
-    },
-    mappings = {
-      i = {
-        ["<C-q>"] = false,
-        ["<esc>"] = require("telescope.actions").close,
-      },
-      n = { ["<C-q>"] = false },
-    },
-  },
-  -- pickers = {},
-  extensions = {
-    ["ui-select"] = {
-      require("telescope.themes").get_dropdown(),
-    },
-  },
+	-- You can put your default mappings / updates / etc. in here
+	--  All the info you're looking for is in `:help telescope.setup()`
+	--
+	defaults = {
+		sorting_strategy = "ascending",
+		layout_config = {
+			horizontal = { prompt_position = "top", preview_width = 0.55 },
+			vertical = { mirror = false },
+			width = 0.80,
+			height = 0.70,
+			preview_cutoff = 120,
+		},
+		mappings = {
+			i = {
+				["<C-q>"] = false,
+				["<esc>"] = require("telescope.actions").close,
+			},
+			n = { ["<C-q>"] = false },
+		},
+	},
+	-- pickers = {},
+	extensions = {
+		["ui-select"] = {
+			require("telescope.themes").get_dropdown(),
+		},
+	},
 })
 
 -- Enable Telescope extensions if they are installed
@@ -70,22 +70,22 @@ vim.keymap.set("n", "<leader>fS", builtin.lsp_dynamic_workspace_symbols, { desc 
 
 -- Slightly advanced example of overriding default behavior and theme
 vim.keymap.set("n", "<leader>/", function()
-  -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-  builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
-    previewer = false,
-  }))
+	-- You can pass additional configuration to Telescope to change the theme, layout, etc.
+	builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
+		previewer = false,
+	}))
 end, { desc = "[/] Fuzzily search in current buffer" })
 
 -- It's also possible to pass additional configuration options.
 --  See `:help telescope.builtin.live_grep()` for information about particular keys
 vim.keymap.set("n", "<leader>f/", function()
-  builtin.live_grep({
-    grep_open_files = true,
-    prompt_title = "Live Grep in Open Files",
-  })
+	builtin.live_grep({
+		grep_open_files = true,
+		prompt_title = "Live Grep in Open Files",
+	})
 end, { desc = "[F]ind [/] in Open Files" })
 
 -- Shortcut for searching your Neovim configuration files
 vim.keymap.set("n", "<leader>fn", function()
-  builtin.find_files({ cwd = vim.fn.stdpath("config") })
+	builtin.find_files({ cwd = vim.fn.stdpath("config") })
 end, { desc = "[F]ind [N]eovim files" })

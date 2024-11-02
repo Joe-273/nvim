@@ -22,7 +22,6 @@ return {
 					floats = "transparent", -- style for floating windows
 				},
 			})
-			-- vim.cmd.colorscheme("tokyonight-moon")
 		end,
 	},
 	{
@@ -31,19 +30,7 @@ return {
 		config = function()
 			require("catppuccin").setup({
 				transparent_background = vim.g.transparent_enabled,
-				highlight_overrides = {
-					all = function(colors)
-						local separator_fg = vim.g.transparent_enabled and colors.surface1 or colors.crust
-						return {
-							NormalFloat = { bg = colors.base },
-							NeoTreeNormal = { bg = colors.base },
-							NeoTreeNormalNC = { bg = colors.base },
-							NeoTreeWinSeparator = { fg = separator_fg, bg = colors.none },
-						}
-					end,
-				},
 			})
-			-- vim.cmd.colorscheme("catppuccin-mocha")
 		end,
 	},
 	{
@@ -63,7 +50,6 @@ return {
 					},
 				},
 			})
-			-- vim.cmd.colorscheme("github_dark")
 		end,
 	},
 	{
@@ -83,16 +69,7 @@ return {
 						types = "italic,bold",
 					},
 				},
-				groups = {
-					all = {
-						NormalFloat = { bg = "bg1" },
-						NeoTreeNormal = { bg = "bg1" },
-						NeoTreeNormalNC = { bg = "bg1" },
-					},
-				},
 			})
-			-- nightfox dayfox dawnfox duskfox nordfox terafox carbonfox
-			vim.cmd.colorscheme("nordfox")
 		end,
 	},
 }

@@ -3,7 +3,7 @@ local M = {}
 M.statuscol_config = function()
 	local builtin = require("statuscol.builtin")
 	require("statuscol").setup({
-		ft_ignore = { "neo-tree", "terminal", "toggleterm" },
+		ft_ignore = { "neo-tree", "terminal", "toggleterm", "trouble", "nioce" },
 		relculright = true,
 		segments = {
 			{ text = { "%s", " " }, click = "v:lua.ScSa" },

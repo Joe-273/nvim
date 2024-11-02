@@ -2,7 +2,6 @@ return {
 	"folke/trouble.nvim",
 	cmd = { "Trouble" },
 	config = function()
-		vim.api.nvim_set_hl(0, "TroubleCount", { link = "TroubleIconBoolean" })
 		require("trouble").setup({
 			modes = {
 				lsp_document_symbols = {
@@ -12,6 +11,8 @@ return {
 			icons = {
 				indent = {
 					last = "╰╴",
+					fold_open = " ",
+					fold_closed = " ",
 				},
 			},
 		})

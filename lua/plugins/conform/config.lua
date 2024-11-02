@@ -20,18 +20,19 @@ require("conform").setup({
 		lua = { "stylua" },
 		-- Conform can also run multiple formatters sequentially
 		python = { "isort", "black" },
-		--
+
 		-- You can use 'stop_after_first' to run the first available formatter from the list
-		javascript = { "eslint_d", "prettierd", stop_after_first = true },
-		typescript = { "eslint_d", "prettierd", stop_after_first = true },
-		vue = { "eslint_d", "prettierd", stop_after_first = true },
-		html = { "prettierd", "prettier", stop_after_first = true },
-		css = { "prettierd", "prettier", stop_after_first = true },
-		scss = { "prettierd", "prettier", stop_after_first = true },
-		less = { "prettierd", "prettier", stop_after_first = true },
-		postcss = { "prettierd", "prettier", stop_after_first = true },
-		json = { "prettierd", stop_after_first = true },
-		--
+		javascript = { "prettierd", "prettier", stop_after_first = true },
+		typescript = { "prettierd", "prettier", stop_after_first = true },
+		vue = { "prettierd", "prettier", stop_after_first = true },
+
+		html = { "prettierd" },
+		css = { "prettierd" },
+		scss = { "prettierd" },
+		less = { "prettierd" },
+		postcss = { "prettierd" },
+
+		json = { "prettierd" },
 		yaml = { "prettierd" },
 		markdown = { "prettierd" },
 	},

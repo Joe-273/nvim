@@ -1,13 +1,15 @@
+---@diagnostic disable: assign-type-mismatch
+local hl = require("config.highlight")
+
 return {
 	"shellRaining/hlchunk.nvim",
 	event = { "BufReadPre", "BufNewFile" },
 	config = function()
-		local function_highlight = vim.api.nvim_get_hl(0, { name = "Boolean", link = false })
-		local fg_color = function_highlight.fg and string.format("#%06X", function_highlight.fg)
+		-- set hlchuk color
 		require("hlchunk").setup({
 			chunk = {
+				style = string.format("#%06X", hl.get_colors().hl_constant),
 				enable = true,
-				style = fg_color,
 				duration = 50,
 				delay = 150,
 			},

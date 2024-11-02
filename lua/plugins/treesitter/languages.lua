@@ -3,7 +3,6 @@ return {
 	"bash",
 	"c",
 	"diff",
-	"html",
 	"lua",
 	"luadoc",
 	"markdown",
@@ -14,11 +13,16 @@ return {
 	"regex",
 	"bash",
 	"python",
+
 	"javascript",
 	"typescript",
+	"tsx",
+	"vue",
+
 	"html",
 	"css",
 	"scss",
-	"vue",
+
 	"json",
+	"jsonc",
 }
