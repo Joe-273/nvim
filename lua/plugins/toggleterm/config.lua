@@ -1,6 +1,3 @@
-local float_border = vim.api.nvim_get_hl(0, { name = "FloatBorder", link = false })
-local float_border_color = float_border.bg and string.format("#%06X", float_border.bg)
-
 require("toggleterm").setup({
 	size = function(term)
 		if term.direction == "horizontal" then
@@ -48,5 +45,5 @@ vim.api.nvim_set_keymap(
 	"n",
 	"<leader>gl",
 	"<cmd>lua _lazygit_toggle()<CR>",
-	{ desc = "[G]it toggle [L]azygit", noremap = true, silent = true }
+	{ desc = "[G]it toggle [l]azygit", noremap = true, silent = true }
 )

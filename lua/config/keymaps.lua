@@ -35,9 +35,34 @@ vim.keymap.set("t", "<C-k>", [[<Cmd>wincmd k<CR>]], { desc = "Move focus to the 
 vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]], { desc = "Move focus to the right window" })
 
 -- Keybinds to process files
-vim.keymap.set("n", "<C-q>", "<cmd>qall<CR>", { desc = "Quit all" })
-vim.keymap.set("n", "<leader>w", "<cmd>w<CR>", { desc = "Save buffer" })
+vim.keymap.set("n", "<C-q>", "<cmd>qall<CR>", { desc = "Quit all window" })
+vim.keymap.set("n", "<leader>w", "<cmd>w<CR>", { desc = "Save current buffer" })
 vim.keymap.set("n", "<leader>W", "<cmd>wall<CR>", { desc = "Save all buffers" })
+vim.keymap.set("n", "<leader>c", function()
+	require("bufdelete").bufdelete(0, false)
+end, { desc = "Delete current buffer" })
+vim.keymap.set("n", "<leader>C", function()
+	local filetypes =
+		{ "OverseerList", "toggleterm", "quickfix", "terminal", "trouble", "noice", "cmp_menu", "cmp_docs" }
+	local buftypes = { "terminal", "nofile" }
+	local current_buf = vim.fn.bufnr("%")
+	local buffers = vim.fn.getbufinfo({ bufloaded = 1 })
+	for _, buffer in ipairs(buffers) do
+		local bufnr = buffer.bufnr
+		local filetype = vim.api.nvim_get_option_value("filetype", { buf = bufnr })
+		local buftype = vim.api.nvim_get_option_value("buftype", { buf = bufnr })
+		local useless = { "[Preview]" }
+
+		-- Close the buffer if it is not the current one and not in the specified filetypes
+		if
+			bufnr ~= current_buf
+			and not vim.tbl_contains(filetypes, filetype)
+			and not vim.tbl_contains(buftypes, buftype)
+		then
+			require("bufdelete").bufdelete(bufnr, vim.tbl_contains(useless, vim.fn.bufname(bufnr)))
+		end
+	end
+end, { desc = "Delete other buffers" })
 
 -- Move to the head or end of the line
 vim.keymap.set({ "n", "v" }, "<S-h>", "^", { desc = "Move to the head of the line" })
@@ -48,3 +73,8 @@ vim.keymap.set("n", "<S-A-l>", "<C-w>>", { desc = "Increase window width" })
 vim.keymap.set("n", "<S-A-h>", "<C-w><", { desc = "Decrease window width" })
 vim.keymap.set("n", "<S-A-j>", "<C-w>+", { desc = "Increase window height" })
 vim.keymap.set("n", "<S-A-k>", "<C-w>-", { desc = "Decrease window height" })
+
+-- Paste without replacing the unnamed register in visual mode
+vim.keymap.set("x", "p", '"_dP', { noremap = true })
+-- Use <leader>p to paste with the original behavior (updating the register)
+vim.keymap.set("x", "<leader>p", "p", { noremap = true })

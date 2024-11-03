@@ -12,7 +12,7 @@ M.ViMode = {
 	-- and the highlight functions, so we compute it only once per component
 	-- evaluation and store it as a component attributie
 	{
-		provider = " ",
+		provider = "",
 		hl = function()
 			return { bg = default_bg, fg = public_comp.mode_static.mode_colors[vim.fn.mode(1)], bold = true }
 		end,
@@ -118,30 +118,42 @@ M.Diagnostics = {
 
 	update = { "DiagnosticChanged", "BufEnter" },
 
+	hl = { fg = "hl_statement", bg = default_bg },
 	{
-		provider = function(self)
-			-- 0 is just another output, we can decide to print it or not!
-			return self.errors > 0 and (self.error_icon .. self.errors .. " ")
-		end,
-		hl = { fg = "diag_error", bg = default_bg },
+		provider = " [",
 	},
 	{
 		provider = function(self)
-			return self.warnings > 0 and (self.warn_icon .. self.warnings .. " ")
+			return self.errors > 0
+				and (
+					self.error_icon
+					.. self.errors
+					.. (self.warnings > 0 or self.info > 0 or self.hints > 0 and " " or "")
+				)
 		end,
-		hl = { fg = "diag_warn", bg = default_bg },
+		hl = { fg = "diag_error" },
 	},
 	{
 		provider = function(self)
-			return self.info > 0 and (self.info_icon .. self.info .. " ")
+			return self.warnings > 0
+				and (self.warn_icon .. self.warnings .. (self.info > 0 or self.hints > 0 and " " or ""))
 		end,
-		hl = { fg = "diag_info", bg = default_bg },
+		hl = { fg = "diag_warn" },
+	},
+	{
+		provider = function(self)
+			return self.info > 0 and (self.info_icon .. self.info .. (self.hints > 0 and " " or ""))
+		end,
+		hl = { fg = "diag_info" },
 	},
 	{
 		provider = function(self)
 			return self.hints > 0 and (self.hint_icon .. self.hints)
 		end,
-		hl = { fg = "diag_hint", bg = default_bg },
+		hl = { fg = "diag_hint" },
+	},
+	{
+		provider = "]",
 	},
 }
 -- [[ Diagnostics Component ]] end
@@ -160,7 +172,7 @@ M.LSPActive = {
 		for _, server in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
 			table.insert(names, server.name)
 		end
-		return " [" .. table.concat(names, " ") .. "]"
+		return " [" .. table.concat(names, " ") .. "]"
 	end,
 	hl = { fg = "hl_string", bg = default_bg, bold = true },
 }
@@ -169,7 +181,7 @@ M.LSPActive = {
 -- [[ Ruler Component ]] start
 M.Ruler = {
 	{
-		provider = " ",
+		provider = "",
 		hl = function()
 			return { bg = default_bg, fg = public_comp.mode_static.mode_colors[vim.fn.mode(1)], bold = true }
 		end,

@@ -1,5 +1,5 @@
 require("neo-tree").setup({
-	close_if_last_window = true,
+	-- close_if_last_window = true,
 	use_libuv_file_watcher = true,
 	enable_diagnostics = false,
 	hide_root_node = true,

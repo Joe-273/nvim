@@ -59,6 +59,7 @@ M.mode_static = {
 		r = "hl_special",
 		["!"] = "hl_operator",
 		t = "hl_operator",
+		nt = "hl_special",
 	},
 }
 -- [[ Helper ]] end
@@ -90,7 +91,7 @@ M.FileName = {
 		if filename == "" then
 			return "[NONE]"
 		elseif filename == "neo-tree filesystem [1]" then
-			return "[-NEO-TREE-]"
+			return "[NEO-TREE]"
 		else
 			return filename
 		end
@@ -131,7 +132,7 @@ M.StatuslineFileNameModifer = {
 	hl = function()
 		if vim.bo.modified then
 			-- use `force` because we need to override the child's hl foreground
-			return { fg = "hl_statement", bg = M.default_bg, bold = true, force = true }
+			return { fg = "hl_special", bg = M.default_bg, bold = true, force = true }
 		end
 	end,
 }
@@ -144,6 +145,7 @@ M.StatuslineFileNameBlock = utils.insert(
 		M.FileName,
 		hl = function(self)
 			return {
+				fg = "base_fg",
 				bg = (self.is_active or vim.g.transparent_enabled) and "NONE" or "dark_bg",
 				bold = self.is_active or self.is_visible,
 			}
@@ -175,7 +177,7 @@ M.TablineFileFlags = {
 				return "  "
 			end
 		end,
-		hl = { fg = "hl_special" },
+		hl = { fg = M.mode_static.mode_colors[vim.fn.mode(1)] },
 	},
 }
 
@@ -209,7 +211,8 @@ M.TablineFileNameBlock = vim.tbl_extend("force", M.TablineFileNameBlock, {
 		callback = function(_, minwid, _, button)
 			if button == "m" then -- close on mouse middle click
 				vim.schedule(function()
-					vim.api.nvim_buf_delete(minwid, { force = false })
+					-- vim.api.nvim_buf_delete(minwid, { force = false })
+					require("bufdelete").bufdelete(minwid, false) -- use bufdelete plugin
 				end)
 			else
 				vim.api.nvim_win_set_buf(0, minwid)

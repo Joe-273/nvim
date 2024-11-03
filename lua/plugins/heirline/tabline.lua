@@ -21,7 +21,8 @@ local TablineCloseButton = {
 		on_click = {
 			callback = function(_, minwid)
 				vim.schedule(function()
-					vim.api.nvim_buf_delete(minwid, { force = false })
+					-- vim.api.nvim_buf_delete(minwid, { force = false })
+					require("bufdelete").bufdelete(minwid, false) -- use bufdelete plugin
 					vim.cmd.redrawtabline()
 				end)
 			end,

@@ -27,9 +27,9 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
 		-- [[ apply theme ]]
 		-- vim.cmd.colorscheme("tokyonight-moon")
 		-- vim.cmd.colorscheme("catppuccin-frappe")
-		-- vim.cmd.colorscheme("github_dark")
-		-- vim.cmd.colorscheme("nordfox")
-		vim.cmd.colorscheme("nightfox")
+		-- vim.cmd.colorscheme("github_dark_dimmed")
+		vim.cmd.colorscheme("nordfox")
+		-- vim.cmd.colorscheme("nightfox")
 
 		hl.set_highlight()
 	end,

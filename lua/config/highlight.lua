@@ -89,11 +89,14 @@ M.set_highlight = function()
 	vim.api.nvim_set_hl(0, "NeoTreeNormalNC", { link = "NormalNC" })
 	vim.api.nvim_set_hl(0, "NeoTreeFloatTitle", { link = "Normal" })
 	vim.api.nvim_set_hl(0, "NeoTreeWinSeparator", { link = "WinSeparator" })
+	vim.api.nvim_set_hl(0, "NeoTreeDirectoryIcon", { link = "Directory" })
+
+	-- dropbar highlight
+	vim.api.nvim_set_hl(0, "DropBarMenuHoverEntry", { link = "Visual" })
+	vim.api.nvim_set_hl(0, "DropBarIconKindFolder", { link = "Directory" })
 
 	vim.api.nvim_set_hl(0, "TelescopeBorder", { link = "FloatBorder" })
 	vim.api.nvim_set_hl(0, "TroubleCount", { link = "TroubleIconBoolean" })
-
-	vim.api.nvim_set_hl(0, "DropBarMenuHoverEntry", { link = "Visual" })
 end
 
 return M

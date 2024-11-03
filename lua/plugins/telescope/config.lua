@@ -62,28 +62,28 @@ vim.keymap.set("n", "<leader>fw", builtin.grep_string, { desc = "[F]ind current 
 vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "[F]ind by [G]rep" })
 vim.keymap.set("n", "<leader>fr", builtin.resume, { desc = "[F]ind [R]esume" })
 vim.keymap.set("n", "<leader>f.", builtin.oldfiles, { desc = '[F]ind Recent Files ("." for repeat)' })
-vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find existing buffers" })
+vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "Choose existing buffer" })
 
 vim.keymap.set("n", "<leader>ft", "<cmd>TodoTelescope<CR>", { desc = "[F]ind [T]odo" })
 vim.keymap.set("n", "<leader>fs", builtin.lsp_document_symbols, { desc = "[F]ind Document [S]ymbols" })
 vim.keymap.set("n", "<leader>fS", builtin.lsp_dynamic_workspace_symbols, { desc = "[F]ind Workspace [S]ymbols" })
 
 -- Slightly advanced example of overriding default behavior and theme
-vim.keymap.set("n", "<leader>/", function()
-	-- You can pass additional configuration to Telescope to change the theme, layout, etc.
-	builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
-		previewer = false,
-	}))
-end, { desc = "[/] Fuzzily search in current buffer" })
+-- vim.keymap.set("n", "<leader>/", function()
+-- 	-- You can pass additional configuration to Telescope to change the theme, layout, etc.
+-- 	builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
+-- 		previewer = false,
+-- 	}))
+-- end, { desc = "[/] Fuzzily search in current buffer" })
 
 -- It's also possible to pass additional configuration options.
 --  See `:help telescope.builtin.live_grep()` for information about particular keys
-vim.keymap.set("n", "<leader>f/", function()
-	builtin.live_grep({
-		grep_open_files = true,
-		prompt_title = "Live Grep in Open Files",
-	})
-end, { desc = "[F]ind [/] in Open Files" })
+-- vim.keymap.set("n", "<leader>f/", function()
+-- 	builtin.live_grep({
+-- 		grep_open_files = true,
+-- 		prompt_title = "Live Grep in Open Files",
+-- 	})
+-- end, { desc = "[F]ind [/] in Open Files" })
 
 -- Shortcut for searching your Neovim configuration files
 vim.keymap.set("n", "<leader>fn", function()

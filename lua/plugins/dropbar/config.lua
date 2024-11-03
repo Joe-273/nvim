@@ -16,6 +16,8 @@ local open_item_and_close_menu = function()
 	end
 end
 require("dropbar").setup({
+	-- only display path in the winbar
+	-- bar = { sources = { require('dropbar.sources').path } },
 	icons = {
 		enable = true,
 		ui = {
