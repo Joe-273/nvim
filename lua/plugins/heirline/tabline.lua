@@ -1,9 +1,10 @@
 local utils = require("heirline.utils")
 local public_comp = require("plugins.heirline.public-comp")
 
-local active_bg_color = require("plugins.heirline.public-comp").vimode_color
-local inactive_fg_color = "base_fg"
-local default_bg = "dark_bg"
+local buffer_inactive_fg = "dark_fg"
+local buffer_inactive_bg = "dark_bg"
+local buffer_active_fg = require("plugins.heirline.public-comp").vimode_color
+local buffer_active_bg = require("plugins.heirline.public-comp").active_filename_block_bg
 
 -- [[ bufferline component ]] start
 -- a nice "x" button to close the buffer
@@ -13,7 +14,7 @@ local TablineCloseButton = {
 	end,
 	-- public_comp.Spacer,
 	{
-		provider = "  ",
+		provider = " ",
 		on_click = {
 			callback = function(_, minwid)
 				vim.schedule(function()
@@ -28,6 +29,15 @@ local TablineCloseButton = {
 			name = "heirline_tabline_close_buffer_callback",
 		},
 	},
+	{
+		provider = "",
+		hl = function(self)
+			return {
+				fg = self.is_active and buffer_active_bg or buffer_inactive_bg,
+				bg = buffer_inactive_bg,
+			}
+		end,
+	},
 }
 
 -- [[ TablineFileNameBlock Component ]] start
@@ -37,11 +47,7 @@ local TablineFileFlags = {
 			return vim.api.nvim_get_option_value("modified", { buf = self.bufnr })
 		end,
 		provider = "  ",
-		hl = function(self)
-			return {
-				fg = self.is_active and "base_bg" or "hl_string",
-			}
-		end,
+		hl = { fg = "hl_string" },
 	},
 }
 
@@ -51,24 +57,29 @@ local TablineFileNameBlock = {
 		self.filename = vim.api.nvim_buf_get_name(bufnr)
 	end,
 	{
-		provider = " ",
+		provider = "",
+		hl = function(self)
+			return {
+				fg = self.is_active and buffer_active_bg or buffer_inactive_bg,
+				bg = buffer_inactive_bg,
+			}
+		end,
 	},
 	public_comp.FileIcon,
 	{
 		public_comp.FileName,
 		hl = function(self)
 			return {
-				fg = self.is_active and "base_bg" or inactive_fg_color,
+				fg = self.is_active and buffer_active_fg() or buffer_inactive_fg,
 				bold = self.is_active or self.is_visible,
 				italic = self.is_active,
 			}
 		end,
 	},
 	TablineFileFlags,
-	hl = function(self)
+	hl = function()
 		return {
 			fg = "dark_fg",
-			bg = self.is_active and active_bg_color() or default_bg,
 		}
 	end,
 }
@@ -100,7 +111,7 @@ local TablineBufferLeftIndicator = {
 		hl = function()
 			return {
 				fg = "dark_fg",
-				bg = default_bg,
+				bg = buffer_inactive_bg,
 				bold = true,
 			}
 		end,
@@ -112,8 +123,8 @@ local TablineBufferBlock = {
 	TablineCloseButton,
 	hl = function(self)
 		return {
-			fg = self.is_active and "base_bg" or inactive_fg_color,
-			bg = self.is_active and active_bg_color() or default_bg,
+			fg = self.is_active and buffer_active_fg() or buffer_inactive_fg,
+			bg = self.is_active and buffer_active_bg or buffer_inactive_bg,
 		}
 	end,
 }
@@ -167,7 +178,7 @@ local TabLineOffset = {
 
 		if vim.bo[bufnr].filetype == "neo-tree" then
 			self.title = "[NEO-TREE]"
-			self.hl = { fg = inactive_fg_color, bg = default_bg }
+			self.hl = { fg = buffer_inactive_fg, bg = buffer_inactive_bg }
 			return true
 			-- elseif vim.bo[bufnr].filetype == "TagBar" then
 			--     ...

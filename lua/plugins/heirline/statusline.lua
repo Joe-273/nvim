@@ -5,7 +5,7 @@ local utils = require("heirline.utils")
 -- Difined Colors Variable
 local vimode_color = require("plugins.heirline.public-comp").vimode_color
 local default_bg = require("plugins.heirline.public-comp").default_bg
-local filename_bg = "#333333"
+local filename_bg = require("plugins.heirline.public-comp").active_filename_block_bg
 
 -- [[ Helper Component ]]
 local Spacer = { provider = "  ", hl = { fg = "NONE" } }
@@ -206,20 +206,13 @@ local LSPActive = {
 	condition = conditions.lsp_attached,
 	update = { "LspAttach", "LspDetach" },
 	{
-		provider = " [",
-	},
-	{
 		provider = function()
 			local names = {}
 			for _, server in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
 				table.insert(names, server.name)
 			end
-			return table.concat(names, " ")
+			return " [" .. table.concat(names, " ") .. "]"
 		end,
-		hl = { fg = "base_fg" },
-	},
-	{
-		provider = "]",
 	},
 	hl = { fg = "hl_string", bold = true },
 	-- You can keep it simple,

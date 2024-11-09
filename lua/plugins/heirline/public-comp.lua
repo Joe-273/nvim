@@ -2,6 +2,7 @@ local M = {}
 
 -- specific colors
 M.default_bg = vim.g.transparent_enabled and "NONE" or "dark_bg"
+M.active_filename_block_bg = "#444444"
 
 -- [[ Helper ]] start
 M.mode_static = {
