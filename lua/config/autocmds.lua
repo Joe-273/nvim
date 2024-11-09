@@ -20,23 +20,12 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 	end,
 })
 
--- Load custom and fix colors colors when switching themes
+-- Fix colors colors when switching themes
 local hl = require("config.highlight")
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
-	callback = function()
-		-- [[ apply theme ]]
-		-- vim.cmd.colorscheme("tokyonight-moon")
-		-- vim.cmd.colorscheme("catppuccin-frappe")
-		-- vim.cmd.colorscheme("github_dark_dimmed")
-		vim.cmd.colorscheme("nordfox")
-		-- vim.cmd.colorscheme("nightfox")
-
-		hl.set_highlight()
-	end,
-})
 vim.api.nvim_create_autocmd({ "ColorScheme" }, {
 	callback = function()
 		hl.set_highlight()
+
 		require("lazy").reload({ plugins = { "heirline.nvim" } })
 		require("lazy").reload({ plugins = { "hlchunk.nvim" } })
 	end,

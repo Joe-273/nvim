@@ -1,22 +1,6 @@
 return {
 	"folke/trouble.nvim",
 	cmd = { "Trouble" },
-	config = function()
-		require("trouble").setup({
-			modes = {
-				lsp_document_symbols = {
-					format = "{kind_icon}{symbol.name} ",
-				},
-			},
-			icons = {
-				indent = {
-					last = "╰╴",
-					fold_open = " ",
-					fold_closed = " ",
-				},
-			},
-		})
-	end,
 	keys = {
 		{
 			"<leader>os",
@@ -39,4 +23,20 @@ return {
 			desc = "[O]utline all [D]iagnostics",
 		},
 	},
+	config = function()
+		require("trouble").setup({
+			modes = {
+				lsp_document_symbols = {
+					format = "{kind_icon}{symbol.name} ",
+				},
+			},
+			icons = {
+				indent = {
+					last = "╰╴",
+					fold_open = " ",
+					fold_closed = " ",
+				},
+			},
+		})
+	end,
 }

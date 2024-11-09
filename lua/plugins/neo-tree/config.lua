@@ -2,7 +2,7 @@ require("neo-tree").setup({
 	-- close_if_last_window = true,
 	use_libuv_file_watcher = true,
 	enable_diagnostics = false,
-	hide_root_node = true,
+	-- hide_root_node = true,
 	popup_border_style = "rounded",
 	sources = {
 		"filesystem",
@@ -24,6 +24,7 @@ require("neo-tree").setup({
 	},
 	default_component_configs = {
 		indent = {
+			padding = 0,
 			last_indent_marker = "╰╴",
 		},
 		modified = {
@@ -42,6 +43,13 @@ require("neo-tree").setup({
 				unstaged = "󰄱",
 				staged = "",
 				conflict = "",
+			},
+		},
+	},
+	filesystem = {
+		filtered_items = {
+			hide_by_name = {
+				"node_modules",
 			},
 		},
 	},

@@ -6,11 +6,31 @@ require("toggleterm").setup({
 			return vim.o.columns * 0.4
 		end
 	end,
-	open_mapping = [[<c-\>]],
+	-- open_mapping = [[<c-\>]],
 	shade_terminals = false,
-	shell = "nu",
+	shell = "pwsh",
 	winblend = 0,
+	highlights = {
+		WinSeparator = {
+			link = "FloatBorder",
+		},
+	},
 })
+
+vim.keymap.set(
+	"n",
+	"|",
+	'<Cmd>execute v:count . "ToggleTerm direction=vertical"<CR>',
+	{ silent = true, noremap = true, desc = "ToggleTerm Vertical" }
+)
+vim.keymap.set(
+	"n",
+	"<C-\\>",
+	'<Cmd>execute v:count . "ToggleTerm direction=horizontal"<CR>',
+	{ silent = true, noremap = true, desc = "ToggleTerm Horizontal" }
+)
+vim.keymap.set("t", "|", "<Esc><Cmd>ToggleTerm<CR>", { noremap = true })
+vim.keymap.set("t", "<C-\\>", "<Esc><Cmd>ToggleTerm<CR>", { silent = true, noremap = true })
 
 -- Setting lazygit
 local Terminal = require("toggleterm.terminal").Terminal
@@ -22,6 +42,9 @@ local lazygit = Terminal:new({
 		border = "rounded",
 	},
 	highlights = {
+		Normal = {
+			link = "Normal",
+		},
 		NormalFloat = {
 			link = "NormalFloat",
 		},

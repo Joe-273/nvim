@@ -1,7 +1,9 @@
 local utils = require("heirline.utils")
 local public_comp = require("plugins.heirline.public-comp")
 
-local default_bg = public_comp.default_bg
+local active_bg_color = require("plugins.heirline.public-comp").vimode_color
+local inactive_fg_color = "base_fg"
+local default_bg = "dark_bg"
 
 -- [[ bufferline component ]] start
 -- a nice "x" button to close the buffer
@@ -12,12 +14,6 @@ local TablineCloseButton = {
 	-- public_comp.Spacer,
 	{
 		provider = "  ",
-		hl = function(self)
-			return {
-				fg = self.is_active and "hl_constant" or "dark_fg",
-				bg = (self.is_active or vim.g.transparent_enabled) and "NONE" or "dark_bg",
-			}
-		end,
 		on_click = {
 			callback = function(_, minwid)
 				vim.schedule(function()
@@ -34,36 +30,99 @@ local TablineCloseButton = {
 	},
 }
 
+-- [[ TablineFileNameBlock Component ]] start
+local TablineFileFlags = {
+	{
+		condition = function(self)
+			return vim.api.nvim_get_option_value("modified", { buf = self.bufnr })
+		end,
+		provider = "  ",
+		hl = function(self)
+			return {
+				fg = self.is_active and "base_bg" or "hl_string",
+			}
+		end,
+	},
+}
+
+local TablineFileNameBlock = {
+	init = function(self)
+		local bufnr = self.bufnr and self.bufnr or 0
+		self.filename = vim.api.nvim_buf_get_name(bufnr)
+	end,
+	{
+		provider = " ",
+	},
+	public_comp.FileIcon,
+	{
+		public_comp.FileName,
+		hl = function(self)
+			return {
+				fg = self.is_active and "base_bg" or inactive_fg_color,
+				bold = self.is_active or self.is_visible,
+				italic = self.is_active,
+			}
+		end,
+	},
+	TablineFileFlags,
+	hl = function(self)
+		return {
+			fg = "dark_fg",
+			bg = self.is_active and active_bg_color() or default_bg,
+		}
+	end,
+}
+
+TablineFileNameBlock = vim.tbl_extend("force", TablineFileNameBlock, {
+	on_click = {
+		callback = function(_, minwid, _, button)
+			if button == "m" then -- close on mouse middle click
+				vim.schedule(function()
+					-- vim.api.nvim_buf_delete(minwid, { force = false })
+					require("bufdelete").bufdelete(minwid, false) -- use bufdelete plugin
+				end)
+			else
+				vim.api.nvim_win_set_buf(0, minwid)
+			end
+		end,
+		minwid = function(self)
+			return self.bufnr
+		end,
+		name = "heirline_tabline_buffer_callback",
+	},
+})
+-- [[ TablineFileNameBlock Component ]] end
+
 -- The final touch!
 local TablineBufferLeftIndicator = {
 	{
 		provider = "│",
-		hl = function(self)
+		hl = function()
 			return {
-				fg = self.is_active and "hl_constant" or "dark_fg",
+				fg = "dark_fg",
 				bg = default_bg,
 				bold = true,
 			}
 		end,
 	},
-	{
-		provider = " ",
-		hl = function(self)
-			return {
-				fg = self.is_active and "hl_constant" or "dark_fg",
-				bg = (self.is_active or vim.g.transparent_enabled) and "NONE" or "dark_bg",
-				bold = true,
-			}
-		end,
-	},
 }
-local TablineBufferBlock = { TablineBufferLeftIndicator, public_comp.TablineFileNameBlock, TablineCloseButton }
+local TablineBufferBlock = {
+	TablineBufferLeftIndicator,
+	TablineFileNameBlock,
+	TablineCloseButton,
+	hl = function(self)
+		return {
+			fg = self.is_active and "base_bg" or inactive_fg_color,
+			bg = self.is_active and active_bg_color() or default_bg,
+		}
+	end,
+}
 
 -- and here we go
 local BufferLine = utils.make_buflist(
 	TablineBufferBlock,
-	{ provider = "│← ", hl = { fg = "dark_fg", bg = default_bg } }, -- left truncation, optional (defaults to "<")
-	{ provider = " →│", hl = { fg = "dark_fg", bg = default_bg } } -- right trunctation, also optional (defaults to ...... yep, ">")
+	{ provider = "│← ", hl = { fg = "dark_fg" } }, -- left truncation, optional (defaults to "<")
+	{ provider = " →│", hl = { fg = "dark_fg" } } -- right trunctation, also optional (defaults to ...... yep, ">")
 	-- by the way, open a lot of buffers and try clicking them ;)
 )
 
@@ -78,7 +137,7 @@ end
 local buflist_cache = {}
 
 -- setup an autocmd that updates the buflist_cache every time that buffers are added/removed
-vim.api.nvim_create_autocmd({ "UIEnter", "BufAdd", "BufDelete" }, {
+vim.api.nvim_create_autocmd({ "UIEnter", "BufAdd", "BufDelete", "ModeChanged" }, {
 	callback = function()
 		vim.schedule(function()
 			local buffers = get_bufs()
@@ -107,8 +166,8 @@ local TabLineOffset = {
 		self.winid = win
 
 		if vim.bo[bufnr].filetype == "neo-tree" then
-			self.title = "[ NEO-TREE ]"
-			self.hl = { bg = default_bg }
+			self.title = "[NEO-TREE]"
+			self.hl = { fg = inactive_fg_color, bg = default_bg }
 			return true
 			-- elseif vim.bo[bufnr].filetype == "TagBar" then
 			--     ...

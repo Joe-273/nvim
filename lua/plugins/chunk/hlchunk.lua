@@ -1,10 +1,9 @@
 ---@diagnostic disable: assign-type-mismatch
-local hl = require("config.highlight")
-
 return {
 	"shellRaining/hlchunk.nvim",
 	event = { "BufReadPre", "BufNewFile" },
 	config = function()
+		local hl = require("config.highlight")
 		-- set hlchuk color
 		require("hlchunk").setup({
 			chunk = {

@@ -5,10 +5,22 @@ M.statuscol_config = function()
 	require("statuscol").setup({
 		ft_ignore = { "neo-tree", "terminal", "toggleterm", "trouble", "nioce" },
 		relculright = true,
+		-- segments = {
+		-- 	{ text = { "%s", " " }, click = "v:lua.ScSa" },
+		-- 	{ text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa" },
+		-- 	{ text = { builtin.foldfunc, " " }, click = "v:lua.ScFa" },
+		-- },
 		segments = {
-			{ text = { "%s", " " }, click = "v:lua.ScSa" },
-			{ text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa" },
-			{ text = { builtin.foldfunc, " " }, click = "v:lua.ScFa" },
+			{
+				sign = { namespace = { "gitsigns" }, colwidth = 1, fillchar = " " },
+				click = "v:lua.ScSa",
+			},
+			{
+				sign = { namespace = { "diagnostic" }, fillchar = " " },
+				click = "v:lua.ScSa",
+			},
+			{ text = { builtin.lnumfunc }, click = "v:lua.ScLa" },
+			{ text = { " ", builtin.foldfunc, " " }, click = "v:lua.ScFa" },
 		},
 	})
 end

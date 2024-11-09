@@ -31,24 +31,25 @@ end
 local M = {}
 
 M.get_colors = function()
+	-- default value of onedarkpro
 	local reserve = {
-		base_bg = "#2d2d2d",
-		base_fg = "#c9d1d9",
-		dark_bg = "#1f1f1f",
-		dark_fg = "#b9bbbe",
-		hl_constant = "#e3b341",
-		hl_string = "#a6d8e7",
-		hl_statement = "#5f5fd5",
+		base_bg = "#282c34",
+		base_fg = "#abb2bf",
+		dark_bg = "#282c34",
+		dark_fg = "#5c6370",
+		hl_constant = "#d19a66",
+		hl_string = "#98c379",
+		hl_statement = "#c678dd",
 		hl_function = "#61afef",
-		hl_special = "#d5a5d4",
-		hl_operator = "#ff5c8e",
+		hl_special = "#61afef",
+		hl_operator = "#56b6c2",
 		diag_warn = "#e5c07b",
-		diag_error = "#ff6c6b",
+		diag_error = "#e06c75",
 		diag_hint = "#56b6c2",
 		diag_info = "#61afef",
-		git_del = "#e06c75",
-		git_add = "#98c379",
-		git_change = "#e5c07b",
+		git_del = "#9a353d",
+		git_add = "#109868",
+		git_change = "#948b60",
 	}
 
 	local color_values = {
@@ -79,24 +80,36 @@ M.get_colors = function()
 end
 
 M.set_highlight = function()
-	-- native highlight
+	-- base highlight setting
 	vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
 	vim.api.nvim_set_hl(0, "FloatBorder", { link = "NonText" })
+	vim.api.nvim_set_hl(0, "Matchparen", { link = "LspReferenceText" })
+
+	-- native highlight
+	vim.api.nvim_set_hl(0, "WinBar", { link = "FloatBorder" })
+	vim.api.nvim_set_hl(0, "WinBarNC", { link = "FloatBorder" })
+	vim.api.nvim_set_hl(0, "CursorLineNr", { link = "Normal" })
 	vim.api.nvim_set_hl(0, "WinSeparator", { link = "FloatBorder" })
 
 	-- neo-tree highlight
 	vim.api.nvim_set_hl(0, "NeoTreeNormal", { link = "Normal" })
+	vim.api.nvim_set_hl(0, "NeoTreeEndOfBuffer", { link = "Normal" })
 	vim.api.nvim_set_hl(0, "NeoTreeNormalNC", { link = "NormalNC" })
 	vim.api.nvim_set_hl(0, "NeoTreeFloatTitle", { link = "Normal" })
 	vim.api.nvim_set_hl(0, "NeoTreeWinSeparator", { link = "WinSeparator" })
 	vim.api.nvim_set_hl(0, "NeoTreeDirectoryIcon", { link = "Directory" })
+	vim.api.nvim_set_hl(0, "NeoTreeRootName", { link = "NeoTreeFileName" })
 
 	-- dropbar highlight
 	vim.api.nvim_set_hl(0, "DropBarMenuHoverEntry", { link = "Visual" })
 	vim.api.nvim_set_hl(0, "DropBarIconKindFolder", { link = "Directory" })
 
+	-- telescope highlight
+	vim.api.nvim_set_hl(0, "TelescopeNormal", { link = "Normal" })
 	vim.api.nvim_set_hl(0, "TelescopeBorder", { link = "FloatBorder" })
+
 	vim.api.nvim_set_hl(0, "TroubleCount", { link = "TroubleIconBoolean" })
+	vim.api.nvim_set_hl(0, "WhichKeyTitle", { link = "FloatBorder" })
 end
 
 return M

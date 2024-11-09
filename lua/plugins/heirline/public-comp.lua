@@ -1,13 +1,9 @@
-local utils = require("heirline.utils")
-
 local M = {}
 
 -- specific colors
 M.default_bg = vim.g.transparent_enabled and "NONE" or "dark_bg"
 
 -- [[ Helper ]] start
-M.Spacer = { provider = "  ", hl = { fg = "NONE", bg = M.default_bg } }
-M.Fill = { provider = "%=", hl = { fg = "NONE", bg = M.default_bg } }
 M.mode_static = {
 	mode_names = { -- change the strings if you like it vvvvverbose!
 		n = "N",
@@ -51,7 +47,7 @@ M.mode_static = {
 		v = "hl_statement",
 		V = "hl_statement",
 		["\22"] = "hl_statement",
-		c = "hl_operator",
+		c = "hl_function",
 		s = "hl_function",
 		S = "hl_function",
 		["\19"] = "hl_function",
@@ -77,7 +73,6 @@ M.FileIcon = {
 	hl = function(self)
 		return {
 			fg = self.icon_color,
-			bg = (self.is_active or vim.g.transparent_enabled) and "NONE" or "dark_bg",
 		}
 	end,
 }
@@ -89,9 +84,9 @@ M.FileName = {
 		local filename = vim.fn.fnamemodify(self.filename, ":t")
 
 		if filename == "" then
-			return "[NONE]"
+			return "NONE"
 		elseif filename == "neo-tree filesystem [1]" then
-			return "[NEO-TREE]"
+			return "NEO-TREE"
 		else
 			return filename
 		end
@@ -103,127 +98,20 @@ M.FileFlags = {
 		condition = function()
 			return vim.bo.modified
 		end,
-		provider = " ",
-		hl = { fg = "hl_string", bg = M.default_bg },
+		provider = "  ",
+		hl = { fg = "hl_string" },
 	},
 	{
 		condition = function()
 			return not vim.bo.modifiable or vim.bo.readonly
 		end,
-		provider = " ",
-		hl = { fg = "hl_special", bg = M.default_bg },
+		provider = "  ",
+		hl = { fg = "hl_special" },
 	},
 }
 
--- [[ StatuslineFileNameBlock Component ]] start
-M.StatuslineFileNameBlock = {
-	-- let's first set up some attributes needed by this component and its children
-	init = function(self)
-		self.filename = vim.api.nvim_buf_get_name(0)
-	end,
-}
-
--- Now, let's say that we want the filename color to change if the buffer is
--- modified. Of course, we could do that directly using the FileName.hl field,
--- but we'll see how easy it is to alter existing components using a "modifier"
--- component
-
-M.StatuslineFileNameModifer = {
-	hl = function()
-		if vim.bo.modified then
-			-- use `force` because we need to override the child's hl foreground
-			return { fg = "hl_special", bg = M.default_bg, bold = true, force = true }
-		end
-	end,
-}
-
--- let's add the children to our FileNameBlock component
-M.StatuslineFileNameBlock = utils.insert(
-	M.StatuslineFileNameBlock,
-	M.FileIcon,
-	utils.insert(M.StatuslineFileNameModifer, {
-		M.FileName,
-		hl = function(self)
-			return {
-				fg = "base_fg",
-				bg = (self.is_active or vim.g.transparent_enabled) and "NONE" or "dark_bg",
-				bold = self.is_active or self.is_visible,
-			}
-		end,
-	}), -- a new table where FileName is a child of FileNameModifier
-	M.FileFlags,
-	{ provider = "%<" } -- this means that the statusline is cut here when there's not enough space
-)
--- [[ StatuslineFileNameBlock Component ]] end
-
--- [[ TablineFileNameBlock Component ]] start
-M.TablineFileFlags = {
-	{
-		condition = function(self)
-			return vim.api.nvim_get_option_value("modified", { buf = self.bufnr })
-		end,
-		provider = "  ",
-		hl = { fg = "hl_string" },
-	},
-	{
-		condition = function(self)
-			return not vim.api.nvim_get_option_value("modifiable", { buf = self.bufnr })
-				or vim.api.nvim_get_option_value("readonly", { buf = self.bufnr })
-		end,
-		provider = function(self)
-			if vim.api.nvim_get_option_value("buftype", { buf = self.bufnr }) == "terminal" then
-				return "  "
-			else
-				return "  "
-			end
-		end,
-		hl = { fg = M.mode_static.mode_colors[vim.fn.mode(1)] },
-	},
-}
-
-M.TablineFileNameBlock = {
-	init = function(self)
-		local bufnr = self.bufnr and self.bufnr or 0
-		self.filename = vim.api.nvim_buf_get_name(bufnr)
-	end,
-	M.FileIcon,
-	{
-		M.FileName,
-		hl = function(self)
-			return {
-				fg = self.is_active and "hl_constant" or "dark_fg",
-				bg = (self.is_active or vim.g.transparent_enabled) and "NONE" or "dark_bg",
-				bold = self.is_active or self.is_visible,
-				italic = self.is_active,
-			}
-		end,
-	},
-	M.TablineFileFlags,
-	hl = function(self)
-		return {
-			bg = (self.is_active or vim.g.transparent_enabled) and "NONE" or "dark_bg",
-		}
-	end,
-}
-
-M.TablineFileNameBlock = vim.tbl_extend("force", M.TablineFileNameBlock, {
-	on_click = {
-		callback = function(_, minwid, _, button)
-			if button == "m" then -- close on mouse middle click
-				vim.schedule(function()
-					-- vim.api.nvim_buf_delete(minwid, { force = false })
-					require("bufdelete").bufdelete(minwid, false) -- use bufdelete plugin
-				end)
-			else
-				vim.api.nvim_win_set_buf(0, minwid)
-			end
-		end,
-		minwid = function(self)
-			return self.bufnr
-		end,
-		name = "heirline_tabline_buffer_callback",
-	},
-})
--- [[ TablineFileNameBlock Component ]] end
+M.vimode_color = function()
+	return M.mode_static.mode_colors[vim.fn.mode(1)]
+end
 
 return M

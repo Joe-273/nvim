@@ -8,6 +8,7 @@ local M = {}
 M.ensure_installed = {
 	"stylua", -- Used to format Lua code
 	"eslint_d",
+	"stylelint",
 	"prettierd",
 }
 -- [[ config for LSP ]]
@@ -24,8 +25,8 @@ M.server = {
 	-- But for many setups, the LSP (`ts_ls`) will work just fine
 	--
 	jsonls = {},
-	html = {},
-	cssls = {},
+	html = { init_options = { provideFormatter = false } },
+	cssls = { init_options = { provideFormatter = false } },
 	ts_ls = {},
 	volar = {},
 

@@ -22,15 +22,15 @@ require("conform").setup({
 		python = { "isort", "black" },
 
 		-- You can use 'stop_after_first' to run the first available formatter from the list
-		javascript = { "prettierd", "prettier", stop_after_first = true },
-		typescript = { "prettierd", "prettier", stop_after_first = true },
-		vue = { "prettierd", "prettier", stop_after_first = true },
+		javascript = { "prettierd", "eslint_d", stop_after_first = true },
+		typescript = { "prettierd", "eslint_d", stop_after_first = true },
+		vue = { "prettierd", "eslint_d", stop_after_first = true },
 
 		html = { "prettierd" },
-		css = { "prettierd" },
-		scss = { "prettierd" },
-		less = { "prettierd" },
-		postcss = { "prettierd" },
+		css = { "prettierd", "stylelint", stop_after_first = true },
+		scss = { "prettierd", "stylelint", stop_after_first = true },
+		less = { "prettierd", "stylelint", stop_after_first = true },
+		postcss = { "prettierd", "stylelint", stop_after_first = true },
 
 		json = { "prettierd" },
 		yaml = { "prettierd" },

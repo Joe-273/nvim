@@ -36,6 +36,7 @@ require("telescope").setup({
 			i = {
 				["<C-q>"] = false,
 				["<esc>"] = require("telescope.actions").close,
+				["<C-y>"] = require("telescope.actions").select_default,
 			},
 			n = { ["<C-q>"] = false },
 		},

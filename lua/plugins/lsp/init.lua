@@ -17,7 +17,6 @@ return {
 		-- Main LSP Configuration
 		"neovim/nvim-lspconfig",
 		dependencies = {
-			{ "antosha417/nvim-lsp-file-operations", config = true },
 			-- Automatically install LSPs and related tools to stdpath for Neovim
 			{ "williamboman/mason.nvim", config = true }, -- NOTE: Must be loaded before dependants
 			{ "williamboman/mason-lspconfig.nvim" },
@@ -25,6 +24,7 @@ return {
 			{ "j-hui/fidget.nvim" },
 
 			-- Allows extra capabilities provided by nvim-cmp
+			{ "antosha417/nvim-lsp-file-operations", config = true },
 			"hrsh7th/cmp-nvim-lsp",
 		},
 		config = function()
@@ -33,7 +33,7 @@ return {
 	},
 	{
 		"ray-x/lsp_signature.nvim",
-		event = "VeryLazy",
+		event = { "BufReadPost", "BufNewFile" },
 		config = function()
 			require("plugins.lsp.lsp_signature")
 		end,
