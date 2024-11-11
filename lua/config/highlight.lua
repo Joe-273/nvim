@@ -1,4 +1,4 @@
----@diagnostic disable: assign-type-mismatch
+---@diagnostic disable: assign-type-mismatch, param-type-mismatch
 
 local function __get_highlight_group(group)
 	local success, hl_group = pcall(vim.api.nvim_get_hl, 0, { name = group })
@@ -56,7 +56,7 @@ M.get_colors = function()
 		base_bg = get_highlight_group_bg("Normal"),
 		base_fg = get_highlight_group_fg("Normal"),
 		dark_bg = get_highlight_group_bg("TablineFill"),
-		dark_fg = get_highlight_group_fg("NonText"),
+		dark_fg = get_highlight_group_fg("NonText"), -- separator color
 		hl_constant = get_highlight_group_fg("Constant"),
 		hl_string = get_highlight_group_fg("String"),
 		hl_statement = get_highlight_group_fg("Statement"),
@@ -80,6 +80,10 @@ M.get_colors = function()
 end
 
 M.set_highlight = function()
+	-- custom highlight group
+	-- local NonText_Color = vim.api.nvim_get_hl(0, { name = "NonText", link = false })
+	-- NonText_Color.italic = true
+
 	-- base highlight setting
 	vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
 	vim.api.nvim_set_hl(0, "FloatBorder", { link = "NonText" })
