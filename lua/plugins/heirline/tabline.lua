@@ -1,7 +1,7 @@
 local utils = require("heirline.utils")
 local public_comp = require("plugins.heirline.public-comp")
 
-local buffer_inactive_fg = "dark_fg"
+local buffer_inactive_fg = "base_fg"
 local buffer_inactive_bg = "dark_bg"
 local buffer_active_fg = require("plugins.heirline.public-comp").vimode_color
 local buffer_active_bg = require("plugins.heirline.public-comp").active_filename_block_bg
@@ -14,7 +14,7 @@ local TablineCloseButton = {
 	end,
 	-- public_comp.Spacer,
 	{
-		provider = " ",
+		provider = "  ",
 		on_click = {
 			callback = function(_, minwid)
 				vim.schedule(function()
@@ -28,15 +28,6 @@ local TablineCloseButton = {
 			end,
 			name = "heirline_tabline_close_buffer_callback",
 		},
-	},
-	{
-		provider = "",
-		hl = function(self)
-			return {
-				fg = self.is_active and buffer_active_bg or buffer_inactive_bg,
-				bg = buffer_inactive_bg,
-			}
-		end,
 	},
 }
 
@@ -64,6 +55,9 @@ local TablineFileNameBlock = {
 				bg = buffer_inactive_bg,
 			}
 		end,
+	},
+	{
+		provider = " ",
 	},
 	public_comp.FileIcon,
 	{
@@ -105,22 +99,18 @@ TablineFileNameBlock = vim.tbl_extend("force", TablineFileNameBlock, {
 -- [[ TablineFileNameBlock Component ]] end
 
 -- The final touch!
-local TablineBufferLeftIndicator = {
+local TablineBufferBlock = {
+	TablineFileNameBlock,
+	TablineCloseButton,
 	{
-		provider = "│",
-		hl = function()
+		provider = "",
+		hl = function(self)
 			return {
-				fg = "dark_fg",
+				fg = self.is_active and buffer_active_bg or buffer_inactive_bg,
 				bg = buffer_inactive_bg,
-				bold = true,
 			}
 		end,
 	},
-}
-local TablineBufferBlock = {
-	TablineBufferLeftIndicator,
-	TablineFileNameBlock,
-	TablineCloseButton,
 	hl = function(self)
 		return {
 			fg = self.is_active and buffer_active_fg() or buffer_inactive_fg,
@@ -185,20 +175,26 @@ local TabLineOffset = {
 		end
 	end,
 
-	provider = function(self)
-		local title = self.title
-		local width = vim.api.nvim_win_get_width(self.winid)
-		local pad = math.ceil((width - #title) / 2)
-		return string.rep(" ", pad - 1) .. title .. string.rep(" ", pad)
-	end,
+	{
+		provider = function(self)
+			local title = self.title
+			local width = vim.api.nvim_win_get_width(self.winid)
+			local pad = math.ceil((width - #title) / 2)
+			return string.rep(" ", pad - 1) .. title .. string.rep(" ", pad)
+		end,
 
-	hl = function(self)
-		if vim.api.nvim_get_current_win() == self.winid then
-			return "TablineFill"
-		else
-			return "Tabline"
-		end
-	end,
+		-- hl = function(self)
+		-- 	if vim.api.nvim_get_current_win() == self.winid then
+		-- 		return "TablineFill"
+		-- 	else
+		-- 		return "Tabline"
+		-- 	end
+		-- end,
+	},
+	{
+		provider = "│",
+		hl = { fg = "dark_fg", bg = buffer_inactive_bg },
+	},
 }
 
 return { TabLineOffset, BufferLine }

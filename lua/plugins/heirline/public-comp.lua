@@ -63,10 +63,9 @@ M.mode_static = {
 
 M.FileIcon = {
 	init = function(self)
-		local filename = self.filename
-		local extension = vim.fn.fnamemodify(filename, ":e")
-		self.icon, self.icon_color =
-			require("nvim-web-devicons").get_icon_color(filename, extension, { default = true })
+		local filename = vim.fn.fnamemodify(self.filename, ":t")
+		local extension = vim.fn.fnamemodify(self.filename, ":e")
+		self.icon, self.icon_color = require("nvim-web-devicons").get_icon_color(filename, extension, { strict = true })
 	end,
 	provider = function(self)
 		return self.icon and (self.icon .. " ")
@@ -113,6 +112,10 @@ M.FileFlags = {
 
 M.vimode_color = function()
 	return M.mode_static.mode_colors[vim.fn.mode(1)]
+end
+
+M.vimode_name = function()
+	return M.mode_static.mode_names[vim.fn.mode(1)]
 end
 
 return M

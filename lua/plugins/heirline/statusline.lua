@@ -1,8 +1,10 @@
 local conditions = require("heirline.conditions")
 local public_comp = require("plugins.heirline.public-comp")
 local utils = require("heirline.utils")
+local sign_icons = require("config.icons").sign
 
 -- Difined Colors Variable
+local vimode_name = require("plugins.heirline.public-comp").vimode_name
 local vimode_color = require("plugins.heirline.public-comp").vimode_color
 local default_bg = require("plugins.heirline.public-comp").default_bg
 local filename_bg = require("plugins.heirline.public-comp").active_filename_block_bg
@@ -25,7 +27,7 @@ local ViMode = {
 		-- control the padding and make sure our string is always at least 2
 		-- characters long. Plus a nice Icon.
 		provider = function()
-			return "  %2(" .. public_comp.mode_static.mode_names[vim.fn.mode(1)] .. "%) "
+			return "  %2(" .. vimode_name() .. "%) "
 		end,
 		-- Same goes for the highlight. Now the foreground will change according to the current mode.
 		hl = function()
@@ -33,13 +35,13 @@ local ViMode = {
 		end,
 		-- Re-evaluate the component only on ModeChanged event!
 		-- Also allows the statusline to be re-evaluated when entering operator-pending mode
-		update = {
-			"ModeChanged",
-			pattern = "*:*",
-			callback = vim.schedule_wrap(function()
-				vim.cmd("redrawstatus")
-			end),
-		},
+		-- update = {
+		-- 	"ModeChanged",
+		-- 	pattern = "*:*",
+		-- 	callback = vim.schedule_wrap(function()
+		-- 		vim.cmd("redrawstatus")
+		-- 	end),
+		-- },
 	},
 	{
 		provider = "",
@@ -140,10 +142,10 @@ local Diagnostics = {
 	condition = conditions.has_diagnostics,
 
 	static = {
-		error_icon = vim.fn.sign_getdefined("DiagnosticSignError")[1].text,
-		warn_icon = vim.fn.sign_getdefined("DiagnosticSignWarn")[1].text,
-		info_icon = vim.fn.sign_getdefined("DiagnosticSignInfo")[1].text,
-		hint_icon = vim.fn.sign_getdefined("DiagnosticSignHint")[1].text,
+		error_icon = sign_icons.error,
+		warn_icon = sign_icons.warn,
+		info_icon = sign_icons.info,
+		hint_icon = sign_icons.hint,
 	},
 
 	init = function(self)
