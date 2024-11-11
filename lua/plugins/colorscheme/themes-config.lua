@@ -3,7 +3,7 @@ local M = {}
 
 M.tokyonight = {
 	"folke/tokyonight.nvim",
-	event = "VimEnter",
+	event = "VeryLazy",
 	priority = 1000,
 	config = function()
 		require("tokyonight").setup({
@@ -19,7 +19,7 @@ M.tokyonight = {
 
 M.catppuccin = {
 	"catppuccin/nvim",
-	event = "VimEnter",
+	event = "VeryLazy",
 	priority = 1000, -- Make sure to load this before all the other start plugins.
 	config = function()
 		require("catppuccin").setup({
@@ -30,7 +30,7 @@ M.catppuccin = {
 
 M.github = {
 	"projekt0n/github-nvim-theme",
-	event = "VimEnter",
+	event = "VeryLazy",
 	name = "github-theme",
 	priority = 1000, -- make sure to load this before all the other start plugins
 	config = function()
@@ -55,7 +55,7 @@ M.github = {
 
 M.nightfox = {
 	"EdenEast/nightfox.nvim",
-	event = "VimEnter",
+	event = "VeryLazy",
 	priority = 1000, -- Ensure it loads first
 	config = function()
 		-- Default options
@@ -77,7 +77,7 @@ M.nightfox = {
 
 M.onedarkpro = {
 	"olimorris/onedarkpro.nvim",
-	event = "VimEnter",
+	event = "VeryLazy",
 	priority = 1000, -- Ensure it loads first
 	config = function()
 		require("onedarkpro").setup({
@@ -91,7 +91,7 @@ M.onedarkpro = {
 
 M.everforest = {
 	"sainnhe/everforest",
-	event = "VimEnter",
+	event = "VeryLazy",
 	priority = 1000,
 	config = function()
 		-- Optionally configure and load the colorscheme

@@ -15,6 +15,6 @@ return {
 	},
 	-- [[ Register themes ]]
 	-- [[ Apply theme ]]
-	register_theme(palette.nightfox.nightfox),
+	register_theme(palette.catppuccin.macchiato),
 	-- register_theme(),
 }

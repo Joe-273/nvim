@@ -22,8 +22,6 @@ local register_theme = function(palette)
 				vim.cmd.colorscheme(theme_palette.value)
 			end
 
-			-- After loading the theme, it is necessary to reconfigure hlchunk plugin
-			require("lazy").reload({ plugins = { "hlchunk.nvim" } })
 			-- And need to reset highlight
 			hl.set_highlight()
 		end,
