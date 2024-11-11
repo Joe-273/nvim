@@ -35,10 +35,8 @@ require("lazy").setup({
 	--
 	-- Detect tabstop and shiftwidth automatically
 	spec = {
-		"tpope/vim-sleuth",
-
+		{ "tpope/vim-sleuth", event = { "BufReadPost", "BufNewFile" } },
 		-- quick remedy when tab-complete-then-enter fails you, e.g. `nvim init.l`
-		{ "mong8se/actually.nvim", lazy = false },
 
 		-- Use `opts = {}` to force a plugin to be loaded.
 		{ "stevearc/dressing.nvim", event = "VeryLazy", opts = {} },

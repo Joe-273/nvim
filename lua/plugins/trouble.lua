@@ -14,7 +14,7 @@ return {
 		},
 		{
 			"<leader>od",
-			"<cmd>Trouble diagnostics toggle win={relative=win,position=right,size=35} filter.buf=0<CR>",
+			"<cmd>Trouble diagnostics toggle win={size=20} filter.buf=0<CR>",
 			desc = "[O]utline buffer [D]iagnostics",
 		},
 		{
