@@ -7,8 +7,7 @@ local M = {}
 -- [[ config for format ]]
 M.ensure_installed = {
 	"stylua", -- Used to format Lua code
-	"eslint_d",
-	"stylelint",
+	"eslint",
 	"prettierd",
 }
 -- [[ config for LSP ]]
@@ -27,7 +26,7 @@ M.server = {
 	jsonls = {},
 	html = { init_options = { provideFormatter = false } },
 	cssls = { init_options = { provideFormatter = false } },
-	ts_ls = {},
+	-- ts_ls = {},
 	volar = {},
 
 	emmet_ls = {

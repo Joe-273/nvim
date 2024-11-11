@@ -1,3 +1,4 @@
+local sign_icons = require("config.icons").sign
 vim.diagnostic.config({
 	virtual_text = {
 		spacing = 2,
@@ -10,10 +11,10 @@ vim.diagnostic.config({
 	severity_sort = true,
 })
 -- If you want icons for diagnostic errors, you'll need to define them somewhere:
-vim.fn.sign_define("DiagnosticSignError", { text = " ", texthl = "DiagnosticSignError" })
-vim.fn.sign_define("DiagnosticSignWarn", { text = " ", texthl = "DiagnosticSignWarn" })
-vim.fn.sign_define("DiagnosticSignInfo", { text = " ", texthl = "DiagnosticSignInfo" })
-vim.fn.sign_define("DiagnosticSignHint", { text = " ", texthl = "DiagnosticSignHint" })
+vim.fn.sign_define("DiagnosticSignError", { text = sign_icons.error, texthl = "DiagnosticSignError" })
+vim.fn.sign_define("DiagnosticSignWarn", { text = sign_icons.warn, texthl = "DiagnosticSignWarn" })
+vim.fn.sign_define("DiagnosticSignInfo", { text = sign_icons.info, texthl = "DiagnosticSignInfo" })
+vim.fn.sign_define("DiagnosticSignHint", { text = sign_icons.hint, texthl = "DiagnosticSignHint" })
 
 --  This function gets run when an LSP attaches to a particular buffer.
 --    That is to say, every time a new file is opened that is associated with
@@ -119,6 +120,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 --  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
 --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 capabilities.textDocument.foldingRange = {
 	dynamicRegistration = false,
