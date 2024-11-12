@@ -66,6 +66,9 @@ M.ufo_config = function()
 		fold_virt_text_handler = handler,
 		open_fold_hl_timeout = 400,
 		preview = {
+			win_config = {
+				winblend = 0,
+			},
 			mappings = {
 				scrollU = "<C-u>",
 				scrollD = "<C-d>",
