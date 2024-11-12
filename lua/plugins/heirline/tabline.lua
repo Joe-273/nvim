@@ -1,131 +1,130 @@
 local utils = require("heirline.utils")
-local public_comp = require("plugins.heirline.public-comp")
+local Public_Comp = require("plugins.heirline.public-comp")
 
-local buffer_inactive_fg = "base_fg"
-local buffer_inactive_bg = "dark_bg"
-local buffer_active_fg = require("plugins.heirline.public-comp").vimode_color
-local buffer_active_bg = require("plugins.heirline.public-comp").active_filename_block_bg
+local File_comp = Public_Comp.File_Components
+local Vimode = Public_Comp.Vimode
+local Specific_var = Public_Comp.Specific_var
 
--- [[ bufferline component ]] start
--- a nice "x" button to close the buffer
-local TablineCloseButton = {
-	condition = function(self)
-		return not vim.api.nvim_get_option_value("modified", { buf = self.bufnr })
+local function get_color(color)
+	if type(color) == "function" then
+		return color()
+	else
+		return color
+	end
+end
+
+local buffer_colors = {
+	active_fg_color = function()
+		return get_color(Vimode.current_color)
 	end,
-	-- public_comp.Spacer,
-	{
-		provider = "  ",
-		on_click = {
-			callback = function(_, minwid)
-				vim.schedule(function()
-					-- vim.api.nvim_buf_delete(minwid, { force = false })
-					require("bufdelete").bufdelete(minwid, false) -- use bufdelete plugin
-					vim.cmd.redrawtabline()
-				end)
+	active_bg_color = function()
+		return get_color(Specific_var.active_filename_block_bg)
+	end,
+	inactive_fg_color = function()
+		return get_color("base_fg")
+	end,
+	inactive_bg_color = function()
+		return get_color("dark_bg")
+	end,
+}
+
+local Buffer_Filename = function()
+	return {
+		{
+			init = function(self)
+				local bufnr = self.bufnr and self.bufnr or 0
+				self.filename = vim.api.nvim_buf_get_name(bufnr)
 			end,
-			minwid = function(self)
-				return self.bufnr
+			{
+				provider = "",
+				hl = function(self)
+					return {
+						fg = self.is_active and buffer_colors.active_bg_color() or buffer_colors.inactive_bg_color(),
+						bg = buffer_colors.inactive_bg_color(),
+					}
+				end,
+			},
+			{
+				provider = " ",
+			},
+			File_comp.Icon_block,
+			{
+				File_comp.Name_block,
+				hl = function(self)
+					return {
+						fg = self.is_active and buffer_colors.active_fg_color() or buffer_colors.inactive_fg_color(),
+						bold = self.is_active or self.is_visible,
+						italic = self.is_active,
+					}
+				end,
+			},
+			hl = function(self)
+				return {
+					bg = self.is_active and buffer_colors.active_bg_color() or buffer_colors.inactive_bg_color(),
+				}
 			end,
-			name = "heirline_tabline_close_buffer_callback",
 		},
-	},
-}
+	}
+end
 
--- [[ TablineFileNameBlock Component ]] start
-local TablineFileFlags = {
-	{
-		condition = function(self)
-			return vim.api.nvim_get_option_value("modified", { buf = self.bufnr })
-		end,
-		provider = "  ",
-		hl = { fg = "hl_string" },
-	},
-}
-
-local TablineFileNameBlock = {
-	init = function(self)
-		local bufnr = self.bufnr and self.bufnr or 0
-		self.filename = vim.api.nvim_buf_get_name(bufnr)
-	end,
-	{
-		provider = "",
+local Buffer_Name_Flag = function()
+	return {
+		{
+			condition = function(self)
+				return not vim.api.nvim_get_option_value("modified", { buf = self.bufnr })
+			end,
+			provider = "  ",
+			on_click = {
+				callback = function(_, minwid)
+					vim.schedule(function()
+						require("bufdelete").bufdelete(minwid, false) -- use bufdelete plugin
+						vim.cmd.redrawtabline()
+					end)
+				end,
+				minwid = function(self)
+					return self.bufnr
+				end,
+				name = "heirline_tabline_close_buffer_callback",
+			},
+		},
+		{
+			condition = function(self)
+				return vim.api.nvim_get_option_value("modified", { buf = self.bufnr })
+			end,
+			provider = "  ",
+			hl = { fg = get_color(Specific_var.buffer_modify_fg) },
+		},
+		{
+			provider = "",
+			hl = function(self)
+				return {
+					fg = self.is_active and buffer_colors.active_bg_color() or buffer_colors.inactive_bg_color(),
+					bg = buffer_colors.inactive_bg_color(),
+				}
+			end,
+		},
 		hl = function(self)
 			return {
-				fg = self.is_active and buffer_active_bg or buffer_inactive_bg,
-				bg = buffer_inactive_bg,
+				fg = self.is_active and buffer_colors.active_fg_color() or buffer_colors.inactive_fg_color(),
+				bg = self.is_active and buffer_colors.active_bg_color() or buffer_colors.inactive_bg_color(),
 			}
 		end,
-	},
-	{
-		provider = " ",
-	},
-	public_comp.FileIcon,
-	{
-		public_comp.FileName,
-		hl = function(self)
-			return {
-				fg = self.is_active and buffer_active_fg() or buffer_inactive_fg,
-				bold = self.is_active or self.is_visible,
-				italic = self.is_active,
-			}
-		end,
-	},
-	TablineFileFlags,
-	hl = function()
-		return {
-			fg = "dark_fg",
-		}
-	end,
-}
+	}
+end
 
-TablineFileNameBlock = vim.tbl_extend("force", TablineFileNameBlock, {
-	on_click = {
-		callback = function(_, minwid, _, button)
-			if button == "m" then -- close on mouse middle click
-				vim.schedule(function()
-					-- vim.api.nvim_buf_delete(minwid, { force = false })
-					require("bufdelete").bufdelete(minwid, false) -- use bufdelete plugin
-				end)
-			else
-				vim.api.nvim_win_set_buf(0, minwid)
-			end
-		end,
-		minwid = function(self)
-			return self.bufnr
-		end,
-		name = "heirline_tabline_buffer_callback",
-	},
-})
--- [[ TablineFileNameBlock Component ]] end
-
--- The final touch!
-local TablineBufferBlock = {
-	TablineFileNameBlock,
-	TablineCloseButton,
-	{
-		provider = "",
-		hl = function(self)
-			return {
-				fg = self.is_active and buffer_active_bg or buffer_inactive_bg,
-				bg = buffer_inactive_bg,
-			}
-		end,
-	},
-	hl = function(self)
-		return {
-			fg = self.is_active and buffer_active_fg() or buffer_inactive_fg,
-			bg = self.is_active and buffer_active_bg or buffer_inactive_bg,
-		}
-	end,
-}
-
--- and here we go
-local BufferLine = utils.make_buflist(
-	TablineBufferBlock,
-	{ provider = "│← ", hl = { fg = "dark_fg" } }, -- left truncation, optional (defaults to "<")
-	{ provider = " →│", hl = { fg = "dark_fg" } } -- right trunctation, also optional (defaults to ...... yep, ">")
-	-- by the way, open a lot of buffers and try clicking them ;)
-)
+local Buffer_Name_Block = function()
+	return {
+		Buffer_Filename(),
+		Buffer_Name_Flag(),
+	}
+end
+local BufferLine_Block = function()
+	return utils.make_buflist(
+		Buffer_Name_Block(),
+		{ provider = "  ", hl = { fg = buffer_colors.inactive_fg_color(), bg = buffer_colors.inactive_bg_color() } },
+		{ provider = "  ", hl = { fg = buffer_colors.inactive_fg_color(), bg = buffer_colors.inactive_bg_color() } }
+	)
+end
 
 -- this is the default function used to retrieve buffers
 local get_bufs = function()
@@ -133,10 +132,8 @@ local get_bufs = function()
 		return vim.api.nvim_get_option_value("buflisted", { buf = bufnr })
 	end, vim.api.nvim_list_bufs())
 end
-
 -- initialize the buflist cache
 local buflist_cache = {}
-
 -- setup an autocmd that updates the buflist_cache every time that buffers are added/removed
 vim.api.nvim_create_autocmd({ "UIEnter", "BufAdd", "BufDelete", "ModeChanged" }, {
 	callback = function()
@@ -158,8 +155,8 @@ vim.api.nvim_create_autocmd({ "UIEnter", "BufAdd", "BufDelete", "ModeChanged" },
 		end)
 	end,
 })
--- [[ bufferline component ]] end
 
+local neotree_seprator_fg = "dark_fg"
 local TabLineOffset = {
 	condition = function(self)
 		local win = vim.api.nvim_tabpage_list_wins(0)[1]
@@ -168,10 +165,8 @@ local TabLineOffset = {
 
 		if vim.bo[bufnr].filetype == "neo-tree" then
 			self.title = "[NEO-TREE]"
-			self.hl = { fg = buffer_inactive_fg, bg = buffer_inactive_bg }
+			self.hl = { fg = buffer_colors.inactive_fg_color(), bg = buffer_colors.inactive_bg_color() }
 			return true
-			-- elseif vim.bo[bufnr].filetype == "TagBar" then
-			--     ...
 		end
 	end,
 
@@ -182,19 +177,10 @@ local TabLineOffset = {
 			local pad = math.ceil((width - #title) / 2)
 			return string.rep(" ", pad - 1) .. title .. string.rep(" ", pad)
 		end,
-
-		-- hl = function(self)
-		-- 	if vim.api.nvim_get_current_win() == self.winid then
-		-- 		return "TablineFill"
-		-- 	else
-		-- 		return "Tabline"
-		-- 	end
-		-- end,
 	},
 	{
 		provider = "│",
-		hl = { fg = "dark_fg", bg = buffer_inactive_bg },
+		hl = { fg = neotree_seprator_fg, bg = buffer_colors.inactive_bg_color() },
 	},
 }
-
-return { TabLineOffset, BufferLine }
+return { TabLineOffset, BufferLine_Block() }
