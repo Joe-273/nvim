@@ -8,7 +8,6 @@ require("toggleterm").setup({
 	end,
 	-- open_mapping = [[<c-\>]],
 	shade_terminals = false,
-	shell = "pwsh",
 	winblend = 0,
 	highlights = {
 		WinSeparator = {
@@ -60,13 +59,10 @@ local lazygit = Terminal:new({
 	end,
 })
 
-function _lazygit_toggle()
+local function _lazygit_toggle()
 	lazygit:toggle()
 end
 
-vim.api.nvim_set_keymap(
-	"n",
-	"<leader>gl",
-	"<cmd>lua _lazygit_toggle()<CR>",
-	{ desc = "[G]it toggle [l]azygit", noremap = true, silent = true }
-)
+vim.keymap.set("n", "<leader>gl", function()
+	_lazygit_toggle()
+end, { desc = "[G]it toggle [l]azygit", noremap = true, silent = true })

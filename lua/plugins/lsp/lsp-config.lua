@@ -137,7 +137,7 @@ capabilities.textDocument.foldingRange = {
 --  - settings (table): Override the default settings passed when initializing the server.
 --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
 
-local servers = require("plugins.lsp.lsp-server").server
+local servers = require("plugins.lsp.lsp-server")
 
 -- Ensure the servers and tools above are installed
 --  To check the current status of installed tools and/or manually install
@@ -153,15 +153,15 @@ require("mason").setup({
 
 -- You can add other tools here that you want Mason to install
 -- for you, so that they are available from within Neovim.
-local ensure_installed = vim.tbl_keys(servers or {})
-vim.list_extend(ensure_installed, require("plugins.lsp.lsp-server").ensure_installed)
+local ensure_installed = vim.tbl_keys(servers.server or {})
+vim.list_extend(ensure_installed, servers.ensure_installed)
 
 require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 require("mason-lspconfig").setup({
 	handlers = {
 		function(server_name)
-			local server = servers[server_name] or {}
+			local server = servers.server[server_name] or {}
 			-- This handles overriding only values explicitly passed
 			-- by the server configuration above. Useful when disabling
 			-- certain features of an LSP (for example, turning off formatting for ts_ls)
