@@ -29,6 +29,8 @@ return {
 		},
 		config = function()
 			require("plugins.lsp.lsp-config")
+			-- update LSP after plugin is loaded
+			vim.cmd("MasonToolsUpdate")
 		end,
 	},
 	{
