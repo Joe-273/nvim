@@ -8,6 +8,13 @@ require("toggleterm").setup({
 	end,
 	-- open_mapping = [[<c-\>]],
 	shade_terminals = false,
+	shell = function()
+		if vim.fn.has("win32") == 1 then
+			return "pwsh"
+		else
+			return "/bin/zsh"
+		end
+	end,
 	winblend = 0,
 	highlights = {
 		WinSeparator = {

@@ -32,14 +32,6 @@ vim.schedule(function()
 	vim.opt.clipboard = "unnamedplus"
 end)
 
-vim.opt.shell = (function()
-	if vim.fn.has("win32") == 1 then
-		return "powershell"
-	else
-		return "/bin/zsh"
-	end
-end)()
-
 -- Enable break indent
 vim.opt.breakindent = true
 
