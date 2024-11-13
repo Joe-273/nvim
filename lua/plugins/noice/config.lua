@@ -60,9 +60,15 @@ require("noice").setup({
 				winblend = 0,
 			},
 		},
-	},
-	presets = {
-		lsp_doc_border = true, -- add a border to hover docs and signature help
+		hover = {
+			border = {
+				style = "rounded",
+			},
+			size = {
+				max_width = 80,
+			},
+			scrollbar = false,
+		},
 	},
 	format = {
 		lsp_progress = {
