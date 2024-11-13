@@ -14,7 +14,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 -- Restore cursor position
 vim.api.nvim_create_autocmd("BufReadPost", {
-	pattern = { "*" },
+	pattern = "*",
 	callback = function()
 		vim.cmd('silent! normal! g`"zv')
 	end,
