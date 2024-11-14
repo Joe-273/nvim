@@ -3,6 +3,7 @@ local Public_Comp = require("plugins.heirline.public-comp")
 
 local Vimode = Public_Comp.Vimode
 local File_comp = Public_Comp.File_Components
+local Specific_var = Public_Comp.Specific_var -- public variable
 
 local function get_color(color)
 	if type(color) == "function" then
@@ -29,7 +30,7 @@ local Vimode_Currentbuffer = function(main_color, dark_bg_color, sub_bg_color)
 			end,
 		},
 		{
-			provider = "",
+			provider = Specific_var.right_half_circle_font,
 			hl = function()
 				return { fg = get_color(main_color), bold = true }
 			end,
@@ -50,7 +51,7 @@ local Vimode_Currentbuffer = function(main_color, dark_bg_color, sub_bg_color)
 				provider = " ",
 			},
 			{
-				provider = "",
+				provider = Specific_var.right_half_circle_font,
 				hl = { fg = get_color(sub_bg_color), bg = get_color(dark_bg_color) },
 			},
 		},
@@ -216,7 +217,7 @@ end
 local Ruler_Block = function(main_color, dark_bg_color)
 	return {
 		{
-			provider = "",
+			provider = Specific_var.left_half_circle_font,
 			hl = function()
 				return { fg = get_color(main_color), bold = true }
 			end,
@@ -235,8 +236,6 @@ local Ruler_Block = function(main_color, dark_bg_color)
 end
 
 -- [[ FINAL COMPONENT ]] --
-local Specific_var = Public_Comp.Specific_var -- public variable
-
 local diagnostics_block_main_fg = "hl_operator"
 local git_block_main_fg = "hl_function"
 local lsp_block_main_fg = "hl_string"

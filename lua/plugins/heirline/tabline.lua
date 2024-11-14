@@ -1,10 +1,6 @@
 local utils = require("heirline.utils")
 local Public_Comp = require("plugins.heirline.public-comp")
 
-local File_comp = Public_Comp.File_Components
-local Vimode = Public_Comp.Vimode
-local Specific_var = Public_Comp.Specific_var
-
 local function get_color(color)
 	if type(color) == "function" then
 		return color()
@@ -12,6 +8,17 @@ local function get_color(color)
 		return color
 	end
 end
+
+-- Retrieve buffers
+local get_bufs = function()
+	return vim.tbl_filter(function(bufnr)
+		return vim.api.nvim_get_option_value("buflisted", { buf = bufnr })
+	end, vim.api.nvim_list_bufs())
+end
+
+local File_comp = Public_Comp.File_Components
+local Vimode = Public_Comp.Vimode
+local Specific_var = Public_Comp.Specific_var
 
 local buffer_colors = {
 	active_fg_color = function()
@@ -35,8 +42,24 @@ local Buffer_Filename = function()
 				local bufnr = self.bufnr and self.bufnr or 0
 				self.filename = vim.api.nvim_buf_get_name(bufnr)
 			end,
+			on_click = {
+				callback = function(_, minwid, _, button)
+					if button == "m" then -- close on mouse middle click
+						vim.schedule(function()
+							-- vim.api.nvim_buf_delete(minwid, { force = false })
+							require("bufdelete").bufdelete(minwid, false) -- use bufdelete plugin
+						end)
+					else
+						vim.api.nvim_win_set_buf(0, minwid)
+					end
+				end,
+				minwid = function(self)
+					return self.bufnr
+				end,
+				name = "heirline_tabline_buffer_callback",
+			},
 			{
-				provider = "",
+				provider = Specific_var.left_half_circle_font,
 				hl = function(self)
 					return {
 						fg = self.is_active and buffer_colors.active_bg_color() or buffer_colors.inactive_bg_color(),
@@ -95,7 +118,7 @@ local Buffer_Name_Flag = function()
 			hl = { fg = get_color(Specific_var.buffer_modify_fg) },
 		},
 		{
-			provider = "",
+			provider = Specific_var.right_half_circle_font,
 			hl = function(self)
 				return {
 					fg = self.is_active and buffer_colors.active_bg_color() or buffer_colors.inactive_bg_color(),
@@ -112,29 +135,21 @@ local Buffer_Name_Flag = function()
 	}
 end
 
-local Buffer_Name_Block = function()
-	return {
-		Buffer_Filename(),
-		Buffer_Name_Flag(),
-	}
-end
+-- Merge: Buffer_Filename & Buffer_Name_Flag
 local BufferLine_Block = function()
 	return utils.make_buflist(
-		Buffer_Name_Block(),
+		{
+			Buffer_Filename(),
+			Buffer_Name_Flag(),
+		},
 		{ provider = "  ", hl = { fg = buffer_colors.inactive_fg_color(), bg = buffer_colors.inactive_bg_color() } },
 		{ provider = "  ", hl = { fg = buffer_colors.inactive_fg_color(), bg = buffer_colors.inactive_bg_color() } }
 	)
 end
 
--- this is the default function used to retrieve buffers
-local get_bufs = function()
-	return vim.tbl_filter(function(bufnr)
-		return vim.api.nvim_get_option_value("buflisted", { buf = bufnr })
-	end, vim.api.nvim_list_bufs())
-end
 -- initialize the buflist cache
 local buflist_cache = {}
--- setup an autocmd that updates the buflist_cache every time that buffers are added/removed
+-- autocmd to update buflist_cache
 vim.api.nvim_create_autocmd({ "UIEnter", "BufAdd", "BufDelete", "ModeChanged" }, {
 	callback = function()
 		vim.schedule(function()
@@ -183,4 +198,5 @@ local TabLineOffset = {
 		hl = { fg = neotree_seprator_fg, bg = buffer_colors.inactive_bg_color() },
 	},
 }
+
 return { TabLineOffset, BufferLine_Block() }
