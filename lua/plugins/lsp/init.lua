@@ -16,11 +16,9 @@ return {
 	{
 		-- Main LSP Configuration
 		"neovim/nvim-lspconfig",
-		cmd = "Mason",
-		event = { "BufReadPost", "BufNewFile" },
+		event = "VeryLazy",
 		dependencies = {
-			-- Automatically install LSPs and related tools to stdpath for Neovim
-			{ "williamboman/mason.nvim", config = true }, -- NOTE: Must be loaded before dependants
+			{ "williamboman/mason.nvim", config = true },
 			{ "williamboman/mason-lspconfig.nvim" },
 			{ "WhoIsSethDaniel/mason-tool-installer.nvim" },
 
@@ -29,8 +27,6 @@ return {
 		},
 		config = function()
 			require("plugins.lsp.lsp-config")
-			-- update LSP after plugin is loaded
-			vim.cmd("MasonToolsUpdate")
 		end,
 	},
 	{
