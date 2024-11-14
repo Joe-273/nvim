@@ -7,4 +7,9 @@ M.sign = {
 	hint = " ",
 }
 
+M.edge_char = {
+	left = "", -- ""
+	right = "", -- ""
+}
+
 return M
