@@ -50,6 +50,9 @@ require("noice").setup({
 			position = { row = 15, col = "50%" },
 		},
 		mini = { -- Set the transparency of the mini view to 0
+			size = {
+				max_width = math.ceil(vim.o.columns * 0.8),
+			},
 			border = {
 				style = "rounded",
 			},
@@ -78,7 +81,7 @@ require("noice").setup({
 			{ "{data.progress.client} ", hl_group = "NoiceLspProgressClient" },
 		},
 		lsp_progress_done = {
-			{ "✨ ", hl_group = "NoiceLspProgressSpinner" },
+			{ "✨", hl_group = "NoiceLspProgressSpinner" },
 			{ "{data.progress.title} ", hl_group = "NoiceLspProgressTitle" },
 			{ "{data.progress.client} ", hl_group = "NoiceLspProgressClient" },
 		},
