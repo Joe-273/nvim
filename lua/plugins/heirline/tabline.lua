@@ -35,6 +35,7 @@ local buffer_colors = {
 	end,
 }
 
+--- @return table [[ Filename Block ]] Component
 local Buffer_Filename = function()
 	return {
 		{
@@ -90,6 +91,7 @@ local Buffer_Filename = function()
 	}
 end
 
+--- @return table [[ Fileflag Block ]] Component
 local Buffer_Name_Flag = function()
 	return {
 		{
@@ -136,21 +138,22 @@ local Buffer_Name_Flag = function()
 end
 
 -- Merge: Buffer_Filename & Buffer_Name_Flag
+--- @return table [[ BufferLine Block ]] Component
 local BufferLine_Block = function()
 	return utils.make_buflist(
 		{
 			Buffer_Filename(),
 			Buffer_Name_Flag(),
 		},
-		{ provider = "  ", hl = { fg = buffer_colors.inactive_fg_color(), bg = buffer_colors.inactive_bg_color() } },
-		{ provider = "  ", hl = { fg = buffer_colors.inactive_fg_color(), bg = buffer_colors.inactive_bg_color() } }
+		{ provider = " ", hl = { fg = buffer_colors.inactive_fg_color(), bg = buffer_colors.inactive_bg_color() } },
+		{ provider = " ", hl = { fg = buffer_colors.inactive_fg_color(), bg = buffer_colors.inactive_bg_color() } }
 	)
 end
 
 -- initialize the buflist cache
 local buflist_cache = {}
 -- autocmd to update buflist_cache
-vim.api.nvim_create_autocmd({ "UIEnter", "BufAdd", "BufDelete", "ModeChanged" }, {
+vim.api.nvim_create_autocmd({ "UIEnter", "BufEnter", "BufAdd", "BufDelete", "ModeChanged" }, {
 	callback = function()
 		vim.schedule(function()
 			local buffers = get_bufs()
@@ -163,9 +166,9 @@ vim.api.nvim_create_autocmd({ "UIEnter", "BufAdd", "BufDelete", "ModeChanged" },
 
 			-- check how many buffers we have and set showtabline accordingly
 			if #buflist_cache > 1 then
-				vim.o.showtabline = 2 -- always
+				vim.o.showtabline = 2         -- always
 			elseif vim.o.showtabline ~= 1 then -- don't reset the option if it's already at default value
-				vim.o.showtabline = 1 -- only when #tabpages > 1
+				vim.o.showtabline = 1         -- only when #tabpages > 1
 			end
 		end)
 	end,

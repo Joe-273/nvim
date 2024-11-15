@@ -1,24 +1,21 @@
 local sign_icons = require("config.icons").sign
+
 vim.diagnostic.config({
-	virtual_text = {
-		spacing = 2,
-		prefix = "󰧞",
-	},
-	float = {
-		severity_sort = true,
-		source = "if_many",
-	},
+	virtual_text = { spacing = 2, prefix = "󰧞" },
 	severity_sort = true,
+	-- Diagnostic sign icons
+	signs = {
+		text = {
+			[vim.diagnostic.severity.ERROR] = sign_icons.error,
+			[vim.diagnostic.severity.WARN] = sign_icons.warn,
+			[vim.diagnostic.severity.INFO] = sign_icons.info,
+			[vim.diagnostic.severity.HINT] = sign_icons.hint,
+		},
+	},
 })
 
--- LSP icons
-vim.fn.sign_define("DiagnosticSignError", { text = sign_icons.error, texthl = "DiagnosticSignError" })
-vim.fn.sign_define("DiagnosticSignWarn", { text = sign_icons.warn, texthl = "DiagnosticSignWarn" })
-vim.fn.sign_define("DiagnosticSignInfo", { text = sign_icons.info, texthl = "DiagnosticSignInfo" })
-vim.fn.sign_define("DiagnosticSignHint", { text = sign_icons.hint, texthl = "DiagnosticSignHint" })
-
 vim.api.nvim_create_autocmd("LspAttach", {
-	group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
+	group = vim.api.nvim_create_augroup("LSP-attach", { clear = true }),
 	callback = function(event)
 		local map = function(keys, func, desc, mode)
 			mode = mode or "n"
@@ -60,7 +57,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 		-- LSP hover highlight
 		if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
-			local highlight_augroup = vim.api.nvim_create_augroup("kickstart-lsp-highlight", { clear = false })
+			local highlight_augroup = vim.api.nvim_create_augroup("LSP-highlight", { clear = false })
 			vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
 				buffer = event.buf,
 				group = highlight_augroup,
@@ -74,10 +71,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			})
 
 			vim.api.nvim_create_autocmd("LspDetach", {
-				group = vim.api.nvim_create_augroup("kickstart-lsp-detach", { clear = true }),
+				group = vim.api.nvim_create_augroup("LSP-detach", { clear = true }),
 				callback = function(event2)
 					vim.lsp.buf.clear_references()
-					vim.api.nvim_clear_autocmds({ group = "kickstart-lsp-highlight", buffer = event2.buf })
+					vim.api.nvim_clear_autocmds({ group = "LSP-highlight", buffer = event2.buf })
 				end,
 			})
 		end
@@ -91,36 +88,27 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	end,
 })
 
+require("neoconf").setup()
+require("lazydev").setup()
+require("mason").setup({ ui = { border = "rounded" } })
+-- extend LSP servers
+local servers = require("plugins.lsp.lsp-server")
+local ensure_installed = vim.tbl_keys(servers or {})
+
 -- LSP capabilities
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
-capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
-capabilities.textDocument.foldingRange = {
-	dynamicRegistration = false,
-	lineFoldingOnly = true,
-}
+-- Tell the server the capability of foldingRange,
+-- Neovim hasn't added foldingRange to default capabilities, users must add it manually
+capabilities.textDocument.foldingRange = { dynamicRegistration = false, lineFoldingOnly = true }
 
--- extend LSP servers
-local servers = require("plugins.lsp.lsp-server")
-local ensure_installed = vim.tbl_keys(servers.server or {})
-vim.list_extend(ensure_installed, servers.ensure_installed)
-
-require("mason").setup({
-	ui = {
-		border = "rounded",
-	},
-})
-
-require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 require("mason-lspconfig").setup({
+	ensure_installed = ensure_installed,
 	handlers = {
 		function(server_name)
-			local server = servers.server[server_name] or {}
+			local server = servers[server_name] or {}
 			server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
 			require("lspconfig")[server_name].setup(server)
 		end,
 	},
 })
-
--- update LSP after plugin is loaded
-vim.cmd("MasonToolsUpdate")

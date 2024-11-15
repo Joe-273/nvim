@@ -1,4 +1,3 @@
--- See `:help cmp`
 local cmp = require("cmp")
 local luasnip = require("luasnip")
 luasnip.config.setup({})
@@ -28,11 +27,6 @@ cmp.setup({
 		end,
 	},
 	completion = { completeopt = "menu,menuone,noinsert" },
-
-	-- For an understanding of why these mappings were
-	-- chosen, you will need to read `:help ins-completion`
-	--
-	-- No, but seriously. Please read `:help ins-completion`, it is really good!
 	mapping = cmp.mapping.preset.insert({
 		-- Select the [n]ext item
 		["<C-n>"] = cmp.mapping.select_next_item(),
@@ -46,8 +40,6 @@ cmp.setup({
 		["<C-d>"] = cmp.mapping.scroll_docs(4),
 
 		-- Accept ([y]es) the completion.
-		--  This will auto-import if your LSP supports it.
-		--  This will expand snippets if the LSP sent a snippet.
 		["<C-y>"] = cmp.mapping.confirm({ select = true }),
 
 		-- If you prefer more traditional completion keymaps,
@@ -55,11 +47,6 @@ cmp.setup({
 		--['<CR>'] = cmp.mapping.confirm { select = true },
 		--['<Tab>'] = cmp.mapping.select_next_item(),
 		--['<S-Tab>'] = cmp.mapping.select_prev_item(),
-
-		-- Manually trigger a completion from nvim-cmp.
-		--  Generally you don't need this, because nvim-cmp will display
-		--  completions whenever it has completion options available.
-		["<C-Space>"] = cmp.mapping.complete({}),
 
 		-- Think of <c-l> as moving to the right of your snippet expansion.
 		--  So if you have a snippet that's like:

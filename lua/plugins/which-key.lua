@@ -8,9 +8,6 @@ return { -- Useful plugin to show you pending keybinds.
 			title_pos = "center",
 		},
 		spec = {
-			-- { "<leader>c", group = "[C]ode", mode = { "n", "x" } },
-			-- { "<leader>d", group = "[D]ocument" },
-			-- { "<leader>r", group = "[R]ename" },
 			{ "<leader>f", group = "[F]ind" },
 			{ "<leader>g", group = "[G]it" },
 			{ "<leader>h", group = "[H]unk", mode = { "n", "v" } },

@@ -13,8 +13,7 @@ return {
 			require("plugins.colorscheme.transparent")
 		end,
 	},
-	-- [[ Register themes ]]
-	-- [[ Apply theme ]]
+	-- [[ Register themes & Apply theme ]]
 	register_theme(palette.catppuccin.macchiato),
 	-- register_theme(),
 }

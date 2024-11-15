@@ -9,8 +9,6 @@ return {
 			"nvim-neo-tree/neo-tree.nvim",
 			-- "simonmclean/triptych.nvim"
 		},
-		config = function()
-			require("lsp-file-operations").setup()
-		end,
+		opts = {}
 	},
 }

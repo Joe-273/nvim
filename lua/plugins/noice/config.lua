@@ -28,7 +28,14 @@ end
 
 vim.keymap.set("n", "<leader>on", toggle_noice, { desc = "[O]utline [N]oice", noremap = true, silent = true })
 
+local function set_width(percent)
+	return math.ceil(vim.o.columns * percent)
+end
+
 require("noice").setup({
+	presets = {
+		lsp_doc_border = true,
+	},
 	lsp = {
 		-- override markdown rendering so that **cmp** and other plugins use **Treesitter**
 		override = {
@@ -40,9 +47,6 @@ require("noice").setup({
 			-- Resolve conflicts with other plugins
 			enabled = false,
 		},
-		hover = {
-			enabled = true,
-		},
 	},
 	messages = { enabled = true },
 	views = {
@@ -51,7 +55,7 @@ require("noice").setup({
 		},
 		mini = { -- Set the transparency of the mini view to 0
 			size = {
-				max_width = math.ceil(vim.o.columns * 0.8),
+				max_width = set_width(0.8),
 			},
 			border = {
 				style = "rounded",
@@ -64,13 +68,9 @@ require("noice").setup({
 			},
 		},
 		hover = {
-			border = {
-				style = "rounded",
-			},
 			size = {
-				max_width = 80,
+				max_width = set_width(0.8),
 			},
-			scrollbar = false,
 		},
 	},
 	format = {
@@ -81,7 +81,7 @@ require("noice").setup({
 			{ "{data.progress.client} ", hl_group = "NoiceLspProgressClient" },
 		},
 		lsp_progress_done = {
-			{ "✨", hl_group = "NoiceLspProgressSpinner" },
+			{ "✨ ", hl_group = "NoiceLspProgressSpinner" },
 			{ "{data.progress.title} ", hl_group = "NoiceLspProgressTitle" },
 			{ "{data.progress.client} ", hl_group = "NoiceLspProgressClient" },
 		},

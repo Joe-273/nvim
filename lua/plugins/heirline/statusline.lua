@@ -74,8 +74,8 @@ local Git_Block = function(main_color)
 		init = function(self)
 			self.status_dict = vim.b.gitsigns_status_dict
 			self.has_changes = self.status_dict.added ~= 0
-				or self.status_dict.removed ~= 0
-				or self.status_dict.changed ~= 0
+					or self.status_dict.removed ~= 0
+					or self.status_dict.changed ~= 0
 		end,
 
 		hl = { fg = get_color(main_color) },

@@ -1,5 +1,3 @@
----@diagnostic disable: assign-type-mismatch
-
 return {
 	"shellRaining/hlchunk.nvim",
 	event = { "BufReadPre", "BufNewFile" },

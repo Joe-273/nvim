@@ -22,7 +22,7 @@ require("conform").setup({
 		python = { "isort", "black" },
 
 		-- You can use 'stop_after_first' to run the first available formatter from the list
-		javascript = { "eslint", stop_after_first = true },
+		javascript = { "eslint", "prettierd", stop_after_first = true },
 		typescript = { "eslint", "prettierd", stop_after_first = true },
 		vue = { "eslint", "prettierd", stop_after_first = true },
 

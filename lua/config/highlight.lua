@@ -1,5 +1,3 @@
----@diagnostic disable: assign-type-mismatch, param-type-mismatch
-
 local function __get_highlight_group(group)
 	local success, hl_group = pcall(vim.api.nvim_get_hl, 0, { name = group })
 	if success and hl_group then
@@ -32,7 +30,7 @@ local M = {}
 
 M.get_colors = function()
 	-- default value of onedarkpro
-	local reserve = {
+	local reserve_color_map = {
 		base_bg = "#282c34",
 		base_fg = "#abb2bf",
 		dark_bg = "#282c34",
@@ -52,7 +50,7 @@ M.get_colors = function()
 		git_change = "#948b60",
 	}
 
-	local color_values = {
+	local theme_color_map = {
 		base_bg = get_highlight_group_bg("Normal"),
 		base_fg = get_highlight_group_fg("Normal"),
 		dark_bg = get_highlight_group_bg("TablineFill"),
@@ -72,48 +70,51 @@ M.get_colors = function()
 		git_change = get_highlight_group_fg("diffChanged") or get_highlight_group_fg("GitSignsChange"),
 	}
 
-	for key, value in pairs(reserve) do
-		color_values[key] = color_values[key] or value
+	local global_color_map = {}
+	for key, value in pairs(reserve_color_map) do
+		global_color_map[key] = theme_color_map[key] or value
 	end
 
-	return color_values
+	return global_color_map
 end
 
 M.set_highlight = function()
+	local set_hl = vim.api.nvim_set_hl
+
 	-- custom highlight group
-	-- local NonText_Color = vim.api.nvim_get_hl(0, { name = "NonText", link = false })
-	-- NonText_Color.italic = true
+	local NonText_Color = vim.api.nvim_get_hl(0, { name = "NonText" })
 
 	-- base highlight setting
-	vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
-	vim.api.nvim_set_hl(0, "FloatBorder", { link = "NonText" })
-	vim.api.nvim_set_hl(0, "Matchparen", { link = "LspReferenceText" })
+	set_hl(0, "NormalFloat", { link = "Normal" })
+	set_hl(0, "FloatBorder", { link = "NonText" })
+	set_hl(0, "Matchparen", { link = "LspReferenceText" })
+	set_hl(0, "Comment", { fg = NonText_Color.fg })
 
 	-- native highlight
-	vim.api.nvim_set_hl(0, "WinBar", { link = "FloatBorder" })
-	vim.api.nvim_set_hl(0, "WinBarNC", { link = "FloatBorder" })
-	vim.api.nvim_set_hl(0, "CursorLineNr", { link = "Normal" })
-	vim.api.nvim_set_hl(0, "WinSeparator", { link = "FloatBorder" })
+	set_hl(0, "WinBar", { link = "FloatBorder" })
+	set_hl(0, "WinBarNC", { link = "FloatBorder" })
+	set_hl(0, "CursorLineNr", { link = "Normal" })
+	set_hl(0, "WinSeparator", { link = "FloatBorder" })
 
 	-- neo-tree highlight
-	vim.api.nvim_set_hl(0, "NeoTreeNormal", { link = "Normal" })
-	vim.api.nvim_set_hl(0, "NeoTreeEndOfBuffer", { link = "Normal" })
-	vim.api.nvim_set_hl(0, "NeoTreeNormalNC", { link = "NormalNC" })
-	vim.api.nvim_set_hl(0, "NeoTreeFloatTitle", { link = "Normal" })
-	vim.api.nvim_set_hl(0, "NeoTreeWinSeparator", { link = "WinSeparator" })
-	vim.api.nvim_set_hl(0, "NeoTreeDirectoryIcon", { link = "Directory" })
-	vim.api.nvim_set_hl(0, "NeoTreeRootName", { link = "NeoTreeFileName" })
+	set_hl(0, "NeoTreeNormal", { link = "Normal" })
+	set_hl(0, "NeoTreeEndOfBuffer", { link = "Normal" })
+	set_hl(0, "NeoTreeNormalNC", { link = "NormalNC" })
+	set_hl(0, "NeoTreeFloatTitle", { link = "Normal" })
+	set_hl(0, "NeoTreeWinSeparator", { link = "WinSeparator" })
+	set_hl(0, "NeoTreeDirectoryIcon", { link = "Directory" })
+	set_hl(0, "NeoTreeRootName", { link = "NeoTreeFileName" })
 
 	-- dropbar highlight
-	vim.api.nvim_set_hl(0, "DropBarMenuHoverEntry", { link = "Visual" })
-	vim.api.nvim_set_hl(0, "DropBarIconKindFolder", { link = "Directory" })
+	set_hl(0, "DropBarMenuHoverEntry", { link = "Visual" })
+	set_hl(0, "DropBarIconKindFolder", { link = "Directory" })
 
 	-- telescope highlight
-	vim.api.nvim_set_hl(0, "TelescopeNormal", { link = "Normal" })
-	vim.api.nvim_set_hl(0, "TelescopeBorder", { link = "FloatBorder" })
+	set_hl(0, "TelescopeNormal", { link = "Normal" })
+	set_hl(0, "TelescopeBorder", { link = "FloatBorder" })
 
-	vim.api.nvim_set_hl(0, "TroubleCount", { link = "TroubleIconBoolean" })
-	vim.api.nvim_set_hl(0, "WhichKeyTitle", { link = "FloatBorder" })
+	set_hl(0, "TroubleCount", { link = "TroubleIconBoolean" })
+	set_hl(0, "WhichKeyTitle", { link = "FloatBorder" })
 end
 
 return M
