@@ -55,8 +55,8 @@ local M = {}
 
 -- [[ Specific variable ]] start
 M.Specific_var = {
-	default_dark_bg = vim.g.transparent_enabled and "NONE" or "dark_bg",
-	active_filename_block_bg = "#444444",
+	default_dark_bg = "dark_bg",
+	active_filename_block_bg = "#555555",
 	buffer_modify_fg = "hl_string",
 	buffer_lockfile_fg = "hl_special",
 	left_half_circle_font = edge_char.left,

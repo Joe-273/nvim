@@ -5,8 +5,8 @@ return {
 	event = "VeryLazy",
 
 	config = function()
-		local hl = require("config.highlight")
-		require("heirline").load_colors(hl.get_colors())
+		local theme_colors = require("config.theme-colors")
+		require("heirline").load_colors(theme_colors.get_origin_theme_colors())
 		require("heirline").setup({
 			statusline = require("plugins.heirline.statusline"),
 			tabline = require("plugins.heirline.tabline"),

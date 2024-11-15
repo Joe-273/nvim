@@ -2,11 +2,11 @@ return {
 	"shellRaining/hlchunk.nvim",
 	event = { "BufReadPre", "BufNewFile" },
 	config = function()
-		local hl = require("config.highlight")
+		local theme_colors = require("config.theme-colors")
 		-- set hlchuk color
 		require("hlchunk").setup({
 			chunk = {
-				style = string.format("#%06X", hl.get_colors().hl_constant),
+				style = string.format("#%06X", theme_colors.get_origin_theme_colors().hl_constant),
 				enable = true,
 				duration = 50,
 				delay = 150,

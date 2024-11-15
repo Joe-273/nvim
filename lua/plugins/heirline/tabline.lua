@@ -31,7 +31,7 @@ local buffer_colors = {
 		return get_color("base_fg")
 	end,
 	inactive_bg_color = function()
-		return get_color("dark_bg")
+		return get_color(Specific_var.default_dark_bg)
 	end,
 }
 
@@ -166,9 +166,9 @@ vim.api.nvim_create_autocmd({ "UIEnter", "BufEnter", "BufAdd", "BufDelete", "Mod
 
 			-- check how many buffers we have and set showtabline accordingly
 			if #buflist_cache > 1 then
-				vim.o.showtabline = 2         -- always
+				vim.o.showtabline = 2 -- always
 			elseif vim.o.showtabline ~= 1 then -- don't reset the option if it's already at default value
-				vim.o.showtabline = 1         -- only when #tabpages > 1
+				vim.o.showtabline = 1 -- only when #tabpages > 1
 			end
 		end)
 	end,
