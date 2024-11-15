@@ -1,12 +1,12 @@
 local themes_config = require("plugins.colorscheme.themes-config")
 
---- @param palette table|nil
 local register_theme = function(palette)
+	local theme_palette = palette or nil
 	local configs = {}
 
-	if palette ~= nil then
-		if themes_config[palette.theme_name] then
-			themes_config[palette.theme_name].event = nil
+	if theme_palette ~= nil then
+		if themes_config[theme_palette.theme_name] then
+			themes_config[theme_palette.theme_name].event = nil
 		end
 	end
 
@@ -18,9 +18,15 @@ local register_theme = function(palette)
 	local hl = require("config.highlight")
 	vim.api.nvim_create_autocmd({ "VimEnter" }, {
 		callback = function()
-			if palette ~= nil then
-				vim.cmd.colorscheme(palette.value)
+			if theme_palette ~= nil then
+				vim.cmd.colorscheme(theme_palette.value)
 			end
+
+			-- Set theme_colors
+			require("config.theme-colors").__init__()
+
+			-- Init transparent plugin
+			require("plugins.colorscheme.transparent")
 
 			-- And need to reset highlight
 			hl.set_highlight()

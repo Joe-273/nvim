@@ -64,8 +64,9 @@ require("transparent").setup({
 		"TelescopePreviewNormal",
 		"TelescopeResultsNormal",
 		"TelescopePromptNormal",
-		"TabLineSel",
-		"TabLineFill",
+		-- "TabLine"
+		-- "TabLineSel",
+		-- "TabLineFill",
 		"TreesitterContextLineNumber",
 		"QuickFixLine",
 		-- "Pmenu",

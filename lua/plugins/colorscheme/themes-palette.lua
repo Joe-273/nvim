@@ -1,6 +1,6 @@
+---@diagnostic disable: assign-type-mismatch
 -- [[ Store all color schemes for each theme ]]
-local M = {}
-
+--
 local theme_maps = {
 	tokyonight = {
 		moon = "tokyonight-moon",
@@ -48,10 +48,9 @@ local theme_maps = {
 }
 
 for theme_key, theme_palettes in pairs(theme_maps) do
-	M[theme_key] = {}
 	for palette_key, paletee_value in pairs(theme_palettes) do
-		M[theme_key][palette_key] = { theme_name = theme_key, value = paletee_value }
+		theme_palettes[palette_key] = { theme_name = theme_key, value = paletee_value }
 	end
 end
 
-return M
+return theme_maps
