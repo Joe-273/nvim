@@ -1,48 +1,79 @@
 local theme_colors = require("config.theme-colors")
 
+local hl_link = function(hl_group, target_group)
+	-- hl_group link to target_group
+	vim.api.nvim_set_hl(0, hl_group, { link = target_group })
+end
+
+local hl_change = function(hl_group, target_group, callback)
+	local target_hl = nil
+	if target_group then
+		target_hl = vim.api.nvim_get_hl(0, { name = target_group })
+	end
+	vim.api.nvim_set_hl(0, hl_group, callback(target_hl))
+end
+
+local set_hlgroup_italic = function(groups)
+	for i = 1, #groups do
+		local hl_group = groups[i]
+		hl_change(hl_group, hl_group, function(hl)
+			return { fg = hl.fg, bg = hl.bg, italic = true }
+		end)
+	end
+end
+
 local M = {}
 
 M.set_highlight = function()
-	local set_hl = vim.api.nvim_set_hl
-
 	-- Base highlight setting
-	set_hl(0, "NormalFloat", { link = "Normal" })
-	set_hl(0, "FoldColumn", { link = "Normal" })
-	set_hl(0, "FloatBorder", { link = "NonText" })
-	set_hl(0, "Matchparen", { link = "LspReferenceText" })
-
-	-- Custom highlight group
-	local NonText_Color = vim.api.nvim_get_hl(0, { name = "NonText" })
-	set_hl(0, "Comment", { fg = NonText_Color.fg })
-	if vim.g.transparent_enabled then
-		set_hl(0, "TabLineFill", { bg = theme_colors.get_origin_theme_colors().dark_bg })
-	end
+	hl_link("NormalFloat", "Normal")
+	hl_link("FoldColumn", "Normal")
+	hl_link("FloatBorder", "NonText")
+	hl_link("Matchparen", "LspReferenceText")
 
 	-- Native highlight
-	set_hl(0, "WinBar", { link = "FloatBorder" })
-	set_hl(0, "WinBarNC", { link = "FloatBorder" })
-	set_hl(0, "CursorLineNr", { link = "Normal" })
-	set_hl(0, "WinSeparator", { link = "FloatBorder" })
+	hl_link("WinBar", "FloatBorder")
+	hl_link("WinBarNC", "FloatBorder")
+	hl_link("CursorLineNr", "Normal")
+	hl_link("WinSeparator", "FloatBorder")
 
 	-- Neo-tree highlight
-	set_hl(0, "NeoTreeNormal", { link = "Normal" })
-	set_hl(0, "NeoTreeEndOfBuffer", { link = "Normal" })
-	set_hl(0, "NeoTreeNormalNC", { link = "NormalNC" })
-	set_hl(0, "NeoTreeFloatTitle", { link = "Normal" })
-	set_hl(0, "NeoTreeWinSeparator", { link = "WinSeparator" })
-	set_hl(0, "NeoTreeDirectoryIcon", { link = "Directory" })
-	set_hl(0, "NeoTreeRootName", { link = "NeoTreeFileName" })
+	hl_link("NeoTreeNormal", "Normal")
+	hl_link("NeoTreeEndOfBuffer", "Normal")
+	hl_link("NeoTreeNormalNC", "NormalNC")
+	hl_link("NeoTreeFloatTitle", "Normal")
+	hl_link("NeoTreeWinSeparator", "WinSeparator")
+	hl_link("NeoTreeDirectoryIcon", "Directory")
+	hl_link("NeoTreeRootName", "NeoTreeFileName")
 
 	-- Dropbar highlight
-	set_hl(0, "DropBarMenuHoverEntry", { link = "Visual" })
-	set_hl(0, "DropBarIconKindFolder", { link = "Directory" })
+	hl_link("DropBarMenuHoverEntry", "Visual")
+	hl_link("DropBarIconKindFolder", "Directory")
 
 	-- Telescope highlight
-	set_hl(0, "TelescopeNormal", { link = "Normal" })
-	set_hl(0, "TelescopeBorder", { link = "FloatBorder" })
+	hl_link("TelescopeNormal", "Normal")
+	hl_link("TelescopeBorder", "FloatBorder")
 
-	set_hl(0, "TroubleCount", { link = "TroubleIconBoolean" })
-	set_hl(0, "WhichKeyTitle", { link = "FloatBorder" })
+	hl_link("TroubleCount", "TroubleIconBoolean")
+	hl_link("WhichKeyTitle", "FloatBorder")
+
+	-- [[ Custom highlight group ]]
+	-- Set keyword italic style
+	set_hlgroup_italic({ "Keyword", "Statement", "Conditional", "Function", "Special" })
+	-- Change comment color
+	hl_change("Comment", "NonText", function(hl)
+		return { fg = hl.fg, italic = true }
+	end)
+	-- Remove bold style from Visual hl_group
+	hl_change("Visual", "Visual", function(hl)
+		return { fg = hl.fg, bg = hl.bg, bold = false }
+	end)
+	-- Keep TabLineFill bg when set transparent style
+	if vim.g.transparent_enabled then
+		hl_change("TabLineFill", nil, function()
+			return { bg = theme_colors.get_origin_theme_colors().dark_bg }
+		end)
+	end
 end
 
 return M

@@ -17,10 +17,12 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 	end,
 })
 
--- Fix colors colors when switching themes
+-- Fix colors when switching themes
 local hl = require("config.highlight")
+local theme_colors = require("config.theme-colors")
 vim.api.nvim_create_autocmd({ "ColorScheme" }, {
 	callback = function()
+		theme_colors.__init__() -- Set theme_colors
 		hl.set_highlight()
 
 		require("lazy").reload({ plugins = { "heirline.nvim" } })

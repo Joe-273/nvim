@@ -8,10 +8,13 @@ vim.g.maplocalleader = " "
 
 -- Make line numbers default
 vim.opt.number = true
--- vim.opt.relativenumber = true
+-- Vim.opt.relativenumber = true
 
--- enable soft line wrap
+-- Enable soft line wrap
 vim.opt.wrap = false
+
+-- Enables 24-bit RGB color in the TUI.
+vim.opt.termguicolors = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = "a"
@@ -66,5 +69,5 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
--- only one statusline
+-- Only one statusline
 vim.opt.laststatus = 3
