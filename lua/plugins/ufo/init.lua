@@ -1,6 +1,7 @@
 local config = require("plugins.ufo.config")
 return {
 	"kevinhwang91/nvim-ufo",
+	event = "BufReadPost",
 	dependencies = {
 		"kevinhwang91/promise-async",
 		{
@@ -10,7 +11,6 @@ return {
 			end,
 		},
 	},
-	event = "BufReadPost",
 	init = function()
 		config.ufo_init()
 	end,
