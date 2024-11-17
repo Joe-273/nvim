@@ -10,6 +10,6 @@ return {
 		},
 	},
 	-- [[ Register themes & Apply theme ]]
-	register_theme(palette.catppuccin.frappe),
+	register_theme(palette.tokyonight.moon),
 	-- register_theme(),
 }
