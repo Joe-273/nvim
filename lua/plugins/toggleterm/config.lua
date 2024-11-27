@@ -72,4 +72,4 @@ end
 
 vim.keymap.set("n", "<leader>gl", function()
 	_lazygit_toggle()
-end, { desc = "[G]it toggle [l]azygit", noremap = true, silent = true })
+end, { desc = "Git toggle [l]azygit", noremap = true, silent = true })

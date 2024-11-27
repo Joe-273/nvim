@@ -26,7 +26,7 @@ local function toggle_noice()
 	end
 end
 
-vim.keymap.set("n", "<leader>on", toggle_noice, { desc = "[O]utline [N]oice", noremap = true, silent = true })
+vim.keymap.set("n", "<leader>on", toggle_noice, { desc = "Outline history [n]oice", noremap = true, silent = true })
 
 local function set_width(percent)
 	return math.ceil(vim.o.columns * percent)

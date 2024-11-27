@@ -9,7 +9,7 @@ return { -- Autoformat
 				require("conform").format({ async = true, lsp_format = "fallback" })
 			end,
 			mode = "",
-			desc = "LSP [F]ormat buffer",
+			desc = "LSP [f]ormat buffer",
 		},
 	},
 	config = function()

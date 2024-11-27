@@ -204,7 +204,15 @@ local LSP_Block = function(main_color)
 				for _, server in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
 					table.insert(names, server.name)
 				end
-				return "󰙴 [" .. table.concat(names, " ") .. "]"
+				-- return "󰙴 [" .. table.concat(names, " ") .. "]"
+				-- return " [" .. table.concat(names, " ") .. "]"
+				-- return "󱕅 [" .. table.concat(names, " ") .. "]"
+				-- return "󰁨 [" .. table.concat(names, " ") .. "]"
+				-- return "󰣖 [" .. table.concat(names, " ") .. "]"
+				-- return " [" .. table.concat(names, " ") .. "]"
+				-- return "󰲒 [" .. table.concat(names, " ") .. "]"
+				-- return "󰪥 [" .. table.concat(names, " ") .. "]"
+				return "󰅠 [" .. table.concat(names, " ") .. "]"
 			end,
 		},
 		hl = { fg = get_color(main_color), bold = true },

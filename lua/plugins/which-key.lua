@@ -14,7 +14,7 @@ return { -- Useful plugin to show you pending keybinds.
 
 			-- lsp group
 			{ "<leader>l", group = "[L]SP" },
-			{ "<leader>ls", group = "[L]SP [s]ymbols" },
+			{ "<leader>ls", group = "LSP [S]ymbols" },
 
 			{ "<leader>o", group = "[O]utline" },
 			{ "<leader>t", group = "[T]oggle" },

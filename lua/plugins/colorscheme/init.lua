@@ -6,7 +6,7 @@ return {
 		"xiyaowong/transparent.nvim",
 		lazy = false,
 		keys = {
-			{ "<leader>tT", "<cmd>TransparentToggle<CR>", desc = "Theme: [T]oggle [T]ransparency" },
+			{ "<leader>tT", "<cmd>TransparentToggle<CR>", desc = "Colorscheme: Toggle [T]ransparency" },
 		},
 	},
 	-- [[ Register themes & Apply theme ]]
