@@ -19,39 +19,35 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	callback = function(event)
 		local map = function(keys, func, desc, mode)
 			mode = mode or "n"
-			vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
+			vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = desc })
 		end
 
 		-- Definition
-		map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [d]efinition")
+		map("gd", require("telescope.builtin").lsp_definitions, "Goto [d]efinition")
 
 		-- Declaration.
-		map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+		map("gD", vim.lsp.buf.declaration, "Goto [D]eclaration")
 
 		-- Reference
-		map("gr", require("telescope.builtin").lsp_references, "[G]oto [r]eferences")
+		map("gr", require("telescope.builtin").lsp_references, "Goto [r]eferences")
 
 		-- Implementation
-		map("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
+		map("gI", require("telescope.builtin").lsp_implementations, "Goto [I]mplementation")
 
 		-- Type definition
-		map("<leader>lt", require("telescope.builtin").lsp_type_definitions, "[L]SP [t]ype Definition")
+		map("<leader>lt", require("telescope.builtin").lsp_type_definitions, "LSP [t]ype Definition")
 
 		-- Document symbol
-		map("<leader>lsd", require("telescope.builtin").lsp_document_symbols, "[L]SP [s]ymbols of [d]ocument")
+		map("<leader>lsd", require("telescope.builtin").lsp_document_symbols, "LSP Symbols of [d]ocument")
 
 		-- Workspace symbol
-		map(
-			"<leader>lsw",
-			require("telescope.builtin").lsp_dynamic_workspace_symbols,
-			"[L]SP [s]ymbols of [w]orkspace "
-		)
+		map("<leader>lsw", require("telescope.builtin").lsp_dynamic_workspace_symbols, "LSP Symbols of [w]orkspace ")
 
 		-- Rename
-		map("<leader>lr", vim.lsp.buf.rename, "[L]SP [r]ename")
+		map("<leader>lr", vim.lsp.buf.rename, "LSP [r]ename")
 
 		-- Code action
-		map("<leader>la", vim.lsp.buf.code_action, "[L]SP code [a]ction", { "n", "x" })
+		map("<leader>la", vim.lsp.buf.code_action, "LSP code [a]ction", { "n", "x" })
 
 		local client = vim.lsp.get_client_by_id(event.data.client_id)
 
@@ -83,7 +79,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
 			map("<leader>th", function()
 				vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
-			end, "[T]oggle Inlay [h]ints")
+			end, "LSP: Toggle inlay [h]ints")
 		end
 	end,
 })
@@ -92,8 +88,12 @@ require("neoconf").setup()
 require("lazydev").setup()
 require("mason").setup({ ui = { border = "rounded" } })
 -- extend LSP servers
-local servers = require("plugins.lsp.lsp-server")
-local ensure_installed = vim.tbl_keys(servers or {})
+local LSP_Server = require("plugins.lsp.lsp-server").LSP_Server
+local Linter = require("plugins.lsp.lsp-server").Linter
+local Formatter = require("plugins.lsp.lsp-server").Formatter
+local ensure_installed = vim.tbl_keys(LSP_Server or {})
+vim.list_extend(ensure_installed, Linter)
+vim.list_extend(ensure_installed, Formatter)
 
 -- LSP capabilities
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -102,11 +102,13 @@ capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp"
 -- Neovim hasn't added foldingRange to default capabilities, users must add it manually
 capabilities.textDocument.foldingRange = { dynamicRegistration = false, lineFoldingOnly = true }
 
-require("mason-lspconfig").setup({
+require("mason-tool-installer").setup({
 	ensure_installed = ensure_installed,
+})
+require("mason-lspconfig").setup({
 	handlers = {
 		function(server_name)
-			local server = servers[server_name] or {}
+			local server = LSP_Server[server_name] or {}
 			server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
 			require("lspconfig")[server_name].setup(server)
 		end,

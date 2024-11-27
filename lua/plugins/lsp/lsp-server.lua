@@ -19,7 +19,18 @@ local function get_pkg_path(pkg, path, opts)
 	return ret
 end
 
-local M = {
+local M = {}
+
+M.Formatter = {
+	"prettierd",
+	"stylua",
+}
+
+M.Linter = {
+	"eslint_d",
+}
+
+M.LSP_Server = {
 	-- Lua
 	lua_ls = {
 		-- cmd = {...},
